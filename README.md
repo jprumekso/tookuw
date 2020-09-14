@@ -1,7 +1,6 @@
 # Tookuw
 
-I chalenge myself to build a complete state-based UI app using vanilla JS and here it is Tookuw. 
-> Tookuw is a simple state-based point of sale built with Bootstrap and vanilla JS.
+I chalenge myself to build a complete state-based UI app using vanilla JS. Then here it is Tookuw **a simple state-based point of sale built with Bootstrap and vanilla JS.**
 
 ## Features
 Here are what you can do with this simple UI:
