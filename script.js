@@ -107,7 +107,7 @@ const pageData = {
 function renderCatalog() {
 
   // Use the filteredCatalog instead when user type search query
-  const catalogData = pageData.filteredCatalog.length !== 0 ? pageData.filteredCatalog : pageData.catalogItems;
+  const catalogData = pageData.filteredCatalog.length == 0 && !searchQuery ? pageData.catalogItems : pageData.filteredCatalog;
 
   // Transform catalog item data into catalog item markup
   const catalogItemMarkup = catalogData.map(function (catalogItem, index) {
