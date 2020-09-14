@@ -534,7 +534,7 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
 
   // When the user insert 0 or leave the input blank,
-  if (parseInt(theQtyInput.value) === 0 || theQtyInput.value === '') {
+  if (parseInt(theQtyInput.value) === 0) {
 
     // remove the respective item from the reciptItem array
     pageData.receiptItems.splice(itemIndex, 1);
