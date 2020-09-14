@@ -114,7 +114,7 @@ function renderCatalog() {
 
     const isDisabled = catalogItem.stock === 0 ? 'disabled' : '';
 
-    return `<a href="#" class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center ${isDisabled}" data-catalog-index="${index}">
+    return `<a href="#" class="catalog-item list-group-item list-group-item-action px-0 d-flex flex-wrap align-items-center ${isDisabled}" data-catalog-index="${index}">
               <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
               <div>
                 <p>${catalogItem.title}</p>
