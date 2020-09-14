@@ -1,0 +1,66 @@
+#hidden-sidebar {
+  width: 4em;
+  padding: 1.25em;
+  height: calc(100vh - 64px);
+}
+
+#hidden-sidebar .navbar-nav > li {
+  margin-bottom: 3em;
+}
+
+#hidden-sidebar .navbar-nav li:last-child {
+  margin-bottom: 0;
+}
+
+#hidden-sidebar .nav-item small {
+  font-size: 11px;
+}
+
+.collapsing {
+  display: none;
+  transition: none;
+}
+
+.receipt-list-group p {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.receipt-item-name {
+  flex: 0 0 155px;
+}
+
+.receipt-item-action {
+  flex: 0 0 100px;
+}
+
+.receipt-item-total {
+  flex: 0 0 75px;
+}
+
+#catalog .catalog-item p {
+  margin-bottom: 0;
+}
+
+#search-catalog {
+  flex: 0;
+}
+
+@media (max-width: 575.98px) { 
+
+  .receipt-item-name {
+    flex: 0 0 125px;
+  }
+  
+  .receipt-item-action {
+    flex: 0 0 70px;
+  }
+  
+  .receipt-item-total {
+    flex: 0 0 45px;
+  }
+
+  #search-catalog {
+    flex: 1;
+  }
+}

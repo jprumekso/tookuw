@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tookuw POS</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+    integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+    crossorigin="anonymous" />
+  <!-- Animate CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <!-- The Style -->
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+
+  <!-- Main Top Navigation Bar -->
+  <nav id="main-navbar" class="navbar navbar-expand navbar-dark bg-primary shadow py-0">
+
+    <!-- Toggler Button -->
+    <button class="navbar-toggler d-block text-light pl-2 mr-2" style="border:none" data-toggle="collapse"
+      data-target="#hidden-sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <!-- End of Toggler Button -->
+
+    <!-- Business Name -->
+    <a class="navbar-brand d-none d-sm-block text-uppercase" href="#">Tookuw</a>
+
+    <!-- Profile Button -->
+    <div class="ml-auto">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle text-white d-flex align-items-center" data-toggle="dropdown">
+            <span class="text-light font-weight-bold mr-3">Jalu</span>
+            <i class="fas fa-user-ninja bg-dark p-3 rounded-circle"></i>
+          </a>
+          <div class="dropdown-menu" style="min-width: 7.5rem;">
+            <a class="dropdown-item" href="#"><small>Profile</small></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#"><small>Logout</small></a>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- End of Profile Button -->
+
+  </nav>
+  <!-- End of Main Top Navigation Bar -->
+
+  <!-- Main Content Wrapper -->
+  <div class="d-flex">
+
+    <!-- Sidebar (hidden by default)-->
+    <nav class="bg-dark collapse px-1" id="hidden-sidebar">
+      <ul class="navbar-nav mt-4">
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-cash-register fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-receipt fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-gift fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-user fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-cog fa-lg"></i></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- End of Sidebar -->
+
+    <!-- Main Content -->
+    <main class="w-100 mt-2 p-lg-2" id="body-content">
+
+      <!-- Main Content Start Here -->
+      <div id="main-container" class="container-fluid mt-2">
+
+        <div class="row">
+
+          <!-- Catalog Wrapper -->
+          <div class="col-md-6 col-lg-7 col-xl-8 px-0 px-md-3">
+
+            <!-- Charge Button (only shown on mobile) -->
+            <div class="card shadow d-md-none mb-3 mx-3">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#receipt-modal">
+                  <h4 class="mb-0">
+                    Receipt
+                    <span id="item-counter" class="badge badge-light d-inline-block ml-3">4</span>
+                  </h4>
+                </button>
+                <a href="#" class="add-customer-btn btn" data-toggle="modal" data-target="#user-modal">
+                  <i class="fas fa-user-plus"></i>
+                </a>
+              </div>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="save-receipt-btn btn btn-success rounded-0 text-uppercase">Save</button>
+                <button class="charge-btn btn btn-success rounded-0 text-uppercase">
+                  <span class="d-block">Charge</span>
+                  <span class="total-due d-block">125.000</span>
+                </button>
+              </div>
+            </div>
+            <!-- Charge Button (only shown on mobile) -->
+
+            <!-- Product Catalog -->
+            <div class="card shadow rounded-bottom" style="border-radius: 0;">
+
+              <!-- Catalog Search Bar -->
+              <div class="card-header d-flex bg-white align-items-center mt-2 pb-3 justify-content-between">
+                <h4 class="d-none d-sm-block mb-0">Catalog</h4>
+                <input type="text" class="form-control rounded-pill" id="search-catalog" placeholder="Search...">
+              </div>
+              <!-- End of Catalog Search Bar -->
+
+              <!-- Catalog Body -->
+              <div class="card-body" style="height:485px;overflow-y:scroll;">
+
+                <div id="catalog" class="list-group list-group-flush"><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="0">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Ripe Banana</p>
+                      <p class="text-muted">Stock: 150pcs</p>
+                    </div>
+                    <p class="ml-auto">12500</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="1">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Fresh Apple</p>
+                      <p class="text-muted">Stock: 75pcs</p>
+                    </div>
+                    <p class="ml-auto">6500</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="2">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Juicy Orange</p>
+                      <p class="text-muted">Stock: 100pcs</p>
+                    </div>
+                    <p class="ml-auto">7500</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="3">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Giant Mango</p>
+                      <p class="text-muted">Stock: 5pcs</p>
+                    </div>
+                    <p class="ml-auto">25000</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="4">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Seedless Guava</p>
+                      <p class="text-muted">Stock: 15pcs</p>
+                    </div>
+                    <p class="ml-auto">45000</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="5">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Creamy Durian</p>
+                      <p class="text-muted">Stock: 77pcs</p>
+                    </div>
+                    <p class="ml-auto">12000</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center "
+                    data-catalog-index="6">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Sweety Grape</p>
+                      <p class="text-muted">Stock: 35pcs</p>
+                    </div>
+                    <p class="ml-auto">22000</p>
+                  </a><a href="#"
+                    class="catalog-item list-group-item list-group-item-action d-flex flex-wrap align-items-center disabled"
+                    data-catalog-index="7">
+                    <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+                    <div>
+                      <p>Tasty Pear</p>
+                      <p class="text-muted">Stock: 0pcs</p>
+                    </div>
+                    <p class="ml-auto">5000</p>
+                  </a></div>
+
+              </div>
+              <!-- End of Catalog Body -->
+
+            </div>
+            <!-- End of Product Catalog -->
+
+          </div>
+          <!-- End of Catalog Wrapper -->
+
+          <!-- Checkout Card Wrapper (hidden on mobile) -->
+          <div class="col-md-6 col-lg-5 col-xl-4 d-none d-md-block">
+
+            <!-- Checkout Card -->
+            <div class="card shadow mb-3" id="bill-card">
+
+              <div class="card-body pr-0">
+
+                <!-- Checkout Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                  <h4 class="text-center">Receipt</h4>
+                  <a href="#" class="add-customer-btn btn" data-toggle="modal" data-target="#user-modal">
+                    <i class="fas fa-user-plus"></i>
+                  </a>
+
+                </div>
+
+                <!-- Receipt List Wrapper -->
+                <ul class="receipt-list-group list-group list-group-flush mb-1" style="height:220px;overflow-y:scroll">
+
+                  <!-- Receipt - Header -->
+                  <li class="list-group-item pl-1 pr-2 d-flex justify-content-between align-items-center bg-light">
+                    <p class="receipt-item-name">Item</p>
+                    <p class="receipt-item-action text-center">Qty</p>
+                    <p class="receipt-item-total text-right">Total</p>
+                  </li>
+                  <!-- End of Receipt Header -->
+
+                  <!-- List of Receipt Item -->
+                  <div class="receipt-list-item"></div>
+
+                  <!-- Discount -->
+                  <div class="discount-line border-top"></div>
+
+                </ul>
+                <!-- End of Receipt List Wrapper -->
+
+                <!-- Receipt - Apply Discount -->
+                <li class="list-group-item pl-1 pr-3 d-flex justify-content-between align-items-center mb-4"
+                  style="border:none">
+                  <a href="#" class="apply-discount-btn text-muted border-none" style="text-decoration:none;">Apply
+                    Discount</a>
+                  <input type="text" class="discount-input form-control text-right w-25">
+                </li>
+
+                <!-- Receipt - Total -->
+                <li class="list-group-item pl-1 pr-3 d-flex justify-content-between align-items-center"
+                  style="border:none;">
+                  <h4 class="font-weight-bold">Total</h4>
+                  <h4 class="total-due font-weight-bold">0</h4>
+                </li>
+
+              </div>
+
+            </div>
+            <!-- End of Checkout Card -->
+
+            <!-- Charge Button -->
+            <div class="card shadow">
+
+              <div class="card-body d-flex justify-content-between">
+                <button class="save-receipt-btn btn btn-outline-secondary text-uppercase w-50 mr-2">Save</button>
+                <button class="charge-btn btn btn-primary text-uppercase w-50">Charge</button>
+              </div>
+
+            </div>
+            <!-- Charge Button -->
+
+          </div>
+          <!-- End of Checkout Card Wrapper-->
+
+        </div>
+
+      </div>
+
+    </main>
+    <!-- End of Main Content -->
+
+  </div>
+  <!-- End of Main Content Wrapper -->
+
+  <!-- User Modal -->
+  <!-- Customer Modal -->
+  <div class="modal fade" id="user-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-body">
+
+          <!-- Tab Navigation -->
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home">Customers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile">Add New</a>
+            </li>
+            <li class="nav-item ml-auto">
+              <button type="button" class="close" data-dismiss="modal">
+                <span>×</span>
+              </button>
+            </li>
+          </ul>
+          <!-- End of Tab Navigation -->
+
+          <div class="tab-content" id="myTabContent">
+
+            <!-- Customer List Tab Pane -->
+            <div class="tab-pane fade show active" id="home">
+              <input type="text" class="form-control mt-3 mb-3" id="search-customer" placeholder="Search...">
+              <form action="#" id="customer-select-form" name="customer">
+                <ul id="customer-list" class="list-group list-group-flush" style="height:108px;overflow-y:scroll;">
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-0" value="Leanne"
+                        required="">
+                      <label class="form-check-label" for="customer-0">Leanne</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-1" value="Erwin"
+                        required="">
+                      <label class="form-check-label" for="customer-1">Erwin</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-2" value="Sasha"
+                        required="">
+                      <label class="form-check-label" for="customer-2">Sasha</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-3" value="Eren"
+                        required="">
+                      <label class="form-check-label" for="customer-3">Eren</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-4" value="Kid"
+                        required="">
+                      <label class="form-check-label" for="customer-4">Kid</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-5" value="Jack"
+                        required="">
+                      <label class="form-check-label" for="customer-5">Jack</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-6" value="Captain"
+                        required="">
+                      <label class="form-check-label" for="customer-6">Captain</label>
+                    </div>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-7" value="Drake"
+                        required="">
+                      <label class="form-check-label" for="customer-7">Drake</label>
+                    </div>
+                  </li>
+                </ul>
+                <button id="select-customer-btn" type="submit" class="btn btn-primary btn-block">Select</button>
+              </form>
+            </div>
+            <!-- End of Customer List Tab Pane -->
+
+            <!-- Add New Customer Tab Pane -->
+            <div class="tab-pane fade" id="profile">
+              <form id="new-customer-form" name="newCustomerForm" class="mt-3">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="inputName" placeholder="Name">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" id="inputAddress" placeholder="Address">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" id="inputPhone" placeholder="Phone">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Data</button>
+              </form>
+            </div>
+            <!-- End of Customer List Tab Pane -->
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- End of User Modal -->
+
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="payment-form" name="paymentForm" action="#" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="text-center mb-4 bg-light py-4">
+              <p class="mb-0"><small>Total Due</small></p>
+              <h2 class="total-due mb-0 font-weight-bold"></h2>
+            </div>
+            <div class="form-group">
+              <label for="payment-received"><small>Received</small></label>
+              <input id="payment-received" class="form-control" type="text" name="" required="">
+            </div>
+            <div class="form-group">
+              <label for=""><small>Payment Method</small></label>
+              <ul class="list-group list-group-flush" style="height:108px;overflow-y:scroll;">
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio2" required=""
+                      value="Cash">
+                    <label class="form-check-label" for="paymentRadio2">Cash</label>
+                  </div>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio3" required=""
+                      value="Paypal">
+                    <label class="form-check-label" for="paymentRadio3">Paypal</label>
+                  </div>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio4" required=""
+                      value="Bank Transfer">
+                    <label class="form-check-label" for="paymentRadio4">Bank Transfer</label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="proceed-payment-btn"
+              class="btn btn-primary btn-block text-uppercase">Proceed</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- End of Payment Modal -->
+
+  <!-- Payment Success Modal -->
+  <div id="payment-success-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Payment Succesful</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="d-flex justify-content-around mb-4">
+            <div class="text-center bg-light py-4 w-50 mr-2">
+              <p class="mb-0"><small>Total Paid</small></p>
+              <h2 id="total-paid--modal" class="mb-0 font-weight-bold">0</h2>
+            </div>
+            <div class="text-center bg-light py-4 w-50">
+              <p class="mb-0"><small>Change</small></p>
+              <h2 id="payment-change" class="mb-0 font-weight-bold">0</h2>
+            </div>
+          </div>
+
+          <ul class="list-group">
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted">Date</small>
+                <h6 class="my-0">20 August 2020</h6>
+              </div>
+              <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted">Method</small>
+                <h6 id="payment-method--modal" class="my-0"></h6>
+              </div>
+              <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted">From</small>
+                <h6 id="from-customer--modal" class="my-0">-</h6>
+              </div>
+              <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted">Payment Due</small>
+                <h6 id="payment-due--modal" class="my-0">0</h6>
+              </div>
+              <i class="fas fa-check-circle"></i>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100">
+            <button type="button" id="new-sale-btn" class="btn btn-primary btn-block text-uppercase"
+              data-dismiss="modal">New Sale</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- End of Payment Success Modal -->
+
+  <!-- Alert modal -->
+  <div id="alert-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center pt-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spinner modal -->
+  <div id="spinner-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="background-color:transparent;border:none">
+        <div class="modal-body text-center pt-4">
+          <i class="fas fa-spinner fa-pulse fa-3x text-white"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div id="receipt-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Receipt Detail</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Receipt List Wrapper -->
+          <ul id="mobile-receipt" class="receipt-list-group list-group list-group-flush mb-1"
+            style="height:220px;overflow-y:scroll">
+
+            <!-- Receipt - Header -->
+            <li class="list-group-item pl-1 pr-2 d-flex justify-content-between align-items-center bg-light">
+              <p class="receipt-item-name">Item</p>
+              <p class="receipt-item-action text-center">Qty</p>
+              <p class="receipt-item-total text-right">Total</p>
+            </li>
+            <!-- End of Receipt Header -->
+
+            <!-- List of Receipt Item -->
+            <div class="receipt-list-item"></div>
+
+            <!-- Discount -->
+            <div class="discount-line border-top"></div>
+
+          </ul>
+
+          <!-- Receipt - Apply Discount -->
+          <li class="list-group-item pl-1 pr-0 d-flex justify-content-between align-items-center" style="border:none">
+            <a href="#" class="apply-discount-btn text-muted border-none" style="text-decoration:none;">Apply
+              Discount</a>
+            <input type="text" class="discount-input form-control text-right w-25">
+          </li>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt - Quantity Modal (shown on qty click) -->
+  <div class="modal fade" id="item-qty-modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="number" name="" id="qty-input--modal" class="form-control">
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="set-item-qty-btn" class="btn btn-primary btn-block text-uppercase"
+            data-item-index="" data-current-qty="" data-dismiss="modal">Set Quantity</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Receipt Quantity Modal -->
+
+  <!-- Bootstrap and its dependencies -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <!-- The Script -->
+  <script src="./script.js"></script>
+
+</body>
+
+</html>
