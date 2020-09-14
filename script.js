@@ -106,6 +106,9 @@ const pageData = {
 // The function that render catalogItems data into Catalog Item markup
 function renderCatalog() {
 
+  // Grab the search catalog input value
+  const searchQuery = document.querySelector('#search-catalog').value.toLowerCase();
+
   // Use the filteredCatalog instead when user type search query
   const catalogData = pageData.filteredCatalog.length == 0 && !searchQuery ? pageData.catalogItems : pageData.filteredCatalog;
 
