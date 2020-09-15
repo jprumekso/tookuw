@@ -43,7 +43,7 @@
 }
 
 #search-catalog {
-  flex: 0;
+  flex: 0 1 220px;
 }
 
 @media (max-width: 575.98px) { 
