@@ -94,6 +94,8 @@ const pageData = {
   paymentReceived: 0,
   paymentChange: 0,
   paymentDue: 0,
+  catalogSearchQuery: '',
+  customerSearchQuery: ''
 }
 
 /**
@@ -106,11 +108,8 @@ const pageData = {
 // The function that render catalogItems data into Catalog Item markup
 function renderCatalog() {
 
-  // Grab the search catalog input value
-  const searchQuery = document.querySelector('#search-catalog').value.toLowerCase();
-
   // Use the filteredCatalog instead when user type search query
-  const catalogData = pageData.filteredCatalog.length == 0 && !searchQuery ? pageData.catalogItems : pageData.filteredCatalog;
+  const catalogData = pageData.filteredCatalog.length == 0 && !pageData.catalogSearchQuery ? pageData.catalogItems : pageData.filteredCatalog;
 
   // Transform catalog item data into catalog item markup
   const catalogItemMarkup = catalogData.map(function (catalogItem, index) {
@@ -172,7 +171,8 @@ function renderReceipt() {
 // The function that render customer list
 function renderCustomers() {
 
-  const customerList = pageData.filteredCustomer.length !== 0 ? pageData.filteredCustomer : pageData.customers;
+  // Use the filteredCatalog instead when user type search query
+  const customerList = pageData.filteredCustomer.length == 0 && !pageData.customerSearchQuery ? pageData.customers : pageData.filteredCustomer;
 
   // Turn customers data into customer list
   const customerListMarkup = customerList.map(function (customer, index) {
@@ -358,10 +358,10 @@ function resetView() {
 document.querySelector('#search-catalog').addEventListener('keyup', function (e) {
 
   // Grab the search input value and turn to lowercase
-  const searchQuery = this.value.toLowerCase();
+  pageData.catalogSearchQuery = this.value.toLowerCase();
 
   // Filter the catalogItem data
-  pageData.filteredCatalog = pageData.catalogItems.filter(catalogItem => catalogItem.title.toLowerCase().includes(searchQuery));
+  pageData.filteredCatalog = pageData.catalogItems.filter(catalogItem => catalogItem.title.toLowerCase().includes(pageData.catalogSearchQuery));
 
   // Render Catalog
   renderCatalog();
@@ -748,10 +748,10 @@ document.querySelector('#new-customer-form').addEventListener('submit', function
 document.querySelector('#search-customer').addEventListener('keyup', function (e) {
 
   // Grab the search input value and turn to lowercase
-  const searchQuery = this.value.toLowerCase();
+  pageData.customerSearchQuery = this.value.toLowerCase();
 
   // Filter the customer data
-  pageData.filteredCustomer = pageData.customers.filter(customer => customer.name.toLowerCase().includes(searchQuery));
+  pageData.filteredCustomer = pageData.customers.filter(customer => customer.name.toLowerCase().includes(pageData.customerSearchQuery));
 
   // Render customers
   renderCustomers();
