@@ -310,14 +310,14 @@
   <div id="payment-modal" class="modal fade" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-        <form id="payment-form" name="paymentForm" action="#" method="post">
-          <div class="modal-header">
-            <h5 class="modal-title">Payment</h5>
-            <button type="button" class="close" data-dismiss="modal">
-              <span>×</span>
-            </button>
-          </div>
-          <div class="modal-body">
+        <div class="modal-header">
+          <h5 class="modal-title">Payment</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="payment-form" name="paymentForm" action="#" method="post">
             <div class="text-center mb-4 bg-light py-4">
               <p class="mb-0"><small>Total Due</small></p>
               <h2 class="total-due mb-0 font-weight-bold"></h2>
@@ -352,12 +352,12 @@
                 </li>
               </ul>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" id="proceed-payment-btn"
-              class="btn btn-primary btn-block text-uppercase">Proceed</button>
-          </div>
-        </form>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button form="payment-form" type="submit" id="proceed-payment-btn"
+            class="btn btn-primary btn-block text-uppercase">Proceed</button>
+        </div>
       </div>
     </div>
   </div>
