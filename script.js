@@ -2,41 +2,49 @@
 const pageData = {
   catalogItems: [
     {
+      id: 11,
       title: 'Ripe Banana',
       stock: 150,
       price: 12500
     },
     {
+      id: 12,
       title: 'Fresh Apple',
       stock: 75,
       price: 6500
     },
     {
+      id: 13,
       title: 'Juicy Orange',
       stock: 100,
       price: 7500
     },
     {
+      id: 14,
       title: 'Giant Mango',
       stock: 5,
       price: 25000
     },
     {
+      id: 15,
       title: 'Seedless Guava',
       stock: 15,
       price: 45000
     },
     {
+      id: 16,
       title: 'Creamy Durian',
       stock: 77,
       price: 12000
     },
     {
+      id: 17,
       title: 'Sweety Grape',
       stock: 35,
       price: 22000
     },
     {
+      id: 18,
       title: 'Tasty Pear',
       stock: 0,
       price: 5000
@@ -112,11 +120,11 @@ function renderCatalog() {
   const catalogData = pageData.filteredCatalog.length == 0 && !pageData.catalogSearchQuery ? pageData.catalogItems : pageData.filteredCatalog;
 
   // Transform catalog item data into catalog item markup
-  const catalogItemMarkup = catalogData.map(function (catalogItem, index) {
+  const catalogItemMarkup = catalogData.map(function (catalogItem) {
 
     const isDisabled = catalogItem.stock === 0 ? 'disabled' : '';
 
-    return `<a href="#" class="catalog-item list-group-item list-group-item-action px-0 d-flex flex-wrap align-items-center ${isDisabled}" data-catalog-index="${index}">
+    return `<a href="#" class="catalog-item list-group-item list-group-item-action px-0 d-flex flex-wrap align-items-center ${isDisabled}" data-catalog-id="${catalogItem.id}">
               <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
               <div>
                 <p>${catalogItem.title}</p>
@@ -274,7 +282,7 @@ function addToReceipt(catalogItem) {
 
   // Check whether the incoming catalogItem is already in the receiptItems array
   // by using the catalog title as 'filter' on array.find() method 
-  let existingReceiptItem = pageData.receiptItems.find(receiptItem => receiptItem.title === catalogItem.title);
+  let existingReceiptItem = pageData.receiptItems.find(receiptItem => receiptItem.id === catalogItem.id);
 
   // If array.find() found the same title, then the item must be already in the receiptItems array
   if (existingReceiptItem) {
@@ -380,8 +388,8 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
   }
 
   // Grab the catalog item object by its index
-  const catalogItemIndex = clickedElement.dataset.catalogIndex || clickedElement.closest('.catalog-item').dataset.catalogIndex;
-  const selectedCatalogItem = pageData.catalogItems[catalogItemIndex];
+  const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
+  const selectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.id == catalogItemId);
 
   // Decrement the selected catalog item stock by 1
   selectedCatalogItem.stock--;
@@ -391,6 +399,9 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
 
   // Create a receipt item object by deep copying the selectedCatalogItem
   const receiptItem = JSON.parse(JSON.stringify(selectedCatalogItem));
+
+  // Remove stock property since it won't be used
+  delete receiptItem.stock;
 
   // Assign default receipt quantity to the newly created receipt item
   receiptItem.qty = 1;
