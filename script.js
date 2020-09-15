@@ -178,7 +178,7 @@ function renderCustomers() {
   const customerListMarkup = customerList.map(function (customer, index) {
     return `<li class="list-group-item px-0 d-flex justify-content-between align-items-center">
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="customerRadio" id="customer-${index}" value="${customer.name}" required>
+                <input class="form-check-input" type="radio" name="customerRadio" id="customer-${index}" value="${customer.name}">
                 <label class="form-check-label" for="customer-${index}">${customer.name}</label>
               </div>
             </li>`;
@@ -755,13 +755,13 @@ document.querySelector('#search-customer').addEventListener('keyup', function (e
 
 })
 
-// Select Customer Form -- When user select the customer
-document.querySelector('#customer-select-form').addEventListener('submit', function (e) {
+// Select Customer Button -- When user selects a customer
+document.querySelector('#select-customer-btn').addEventListener('click', function (e) {
 
   e.preventDefault();
 
   // Grab the selected customer's name 
-  const customerName = this.elements.customerRadio.value;
+  const customerName = this.closest('#customer-select-form').elements.customerRadio.value;
 
   // Create a deep copy of the matches customer object in the customers array
   const theCustomer = JSON.parse(JSON.stringify(pageData.customers.find(customer => customer.name === customerName)));
@@ -773,6 +773,21 @@ document.querySelector('#customer-select-form').addEventListener('submit', funct
   renderSelectedCustomer();
 
   $('#user-modal').modal('hide');
+
+});
+
+// Clear Customer Button -- When user deselects customer
+document.querySelector('#clear-customer-btn').addEventListener('click', function (e) {
+
+  e.preventDefault();
+
+  // Grab the Customer List form radio
+  const customerRadio = this.closest('#customer-select-form').elements.customerRadio;
+
+  // Set all radio to false
+  customerRadio.forEach(radio => {
+    radio.checked = false;
+  });
 
 });
 
