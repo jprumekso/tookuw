@@ -261,68 +261,22 @@
 
             <!-- Customer List Tab Pane -->
             <div class="tab-pane fade show active" id="home">
+
               <input type="text" class="form-control mt-3 mb-3" id="search-customer" placeholder="Search...">
+
               <form action="#" id="customer-select-form" name="customer">
-                <ul id="customer-list" class="list-group list-group-flush" style="height:108px;overflow-y:scroll;">
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-0" value="Leanne"
-                        required="">
-                      <label class="form-check-label" for="customer-0">Leanne</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-1" value="Erwin"
-                        required="">
-                      <label class="form-check-label" for="customer-1">Erwin</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-2" value="Sasha"
-                        required="">
-                      <label class="form-check-label" for="customer-2">Sasha</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-3" value="Eren"
-                        required="">
-                      <label class="form-check-label" for="customer-3">Eren</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-4" value="Kid"
-                        required="">
-                      <label class="form-check-label" for="customer-4">Kid</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-5" value="Jack"
-                        required="">
-                      <label class="form-check-label" for="customer-5">Jack</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-6" value="Captain"
-                        required="">
-                      <label class="form-check-label" for="customer-6">Captain</label>
-                    </div>
-                  </li>
-                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="customerRadio" id="customer-7" value="Drake"
-                        required="">
-                      <label class="form-check-label" for="customer-7">Drake</label>
-                    </div>
-                  </li>
-                </ul>
-                <button id="select-customer-btn" type="submit" class="btn btn-primary btn-block">Select</button>
+
+                <!-- Customer List is generated dynamically by Javascript -->
+                <ul id="customer-list" class="list-group list-group-flush" style="height:108px;overflow-y:scroll;"></ul>
+
+                <div class="d-flex">
+                  <button id="clear-customer-btn"
+                    class="btn btn-outline-secondary w-100 mr-2 text-uppercase">Clear</button>
+                  <button id="select-customer-btn" class="btn btn-primary w-100 text-uppercase">Select</button>
+                </div>
+
               </form>
+
             </div>
             <!-- End of Customer List Tab Pane -->
 
