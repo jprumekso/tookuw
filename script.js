@@ -938,17 +938,6 @@ document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 
 });
 
-document.addEventListener('input', function (e) {
-
-  const theElement = e.target;
-  if (!theElement.matches('input[type=number]')) return;
-
-  console.log(typeof theElement.value);
-
-  // theElement.value = theElement.value === '' ? 0 : theElement.value;
-
-})
-
 // Render initial state of the app
 renderCatalog();
 renderCustomers();
