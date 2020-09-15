@@ -412,6 +412,9 @@ document.addEventListener('click', function (e) {
   // Target the clicked element
   const clickedElement = e.target;
 
+  // Bailed out if it's not inside .receipt-list-group
+  if (!clickedElement.closest('.receipt-list-group')) return;
+
   // Bailed out when user click element other than the quantity button
   if (!clickedElement.matches('.qty-btn') && !clickedElement.matches('.fas')) return;
 
