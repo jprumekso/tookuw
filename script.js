@@ -353,7 +353,6 @@ function resetView() {
   renderReceipt();
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
-
 }
 
 /**
@@ -544,6 +543,9 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   // Grab the affected receipt item
   const affectedReceiptItem = pageData.receiptItems[itemIndex];
 
+  // Get current quantity of the affectedReceiptItem
+  const currentQty = affectedReceiptItem.qty;
+
   // Grab the affected catalog item
   const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
 
@@ -586,8 +588,7 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   }
 
-  // Get current quantity of the affectedReceiptItem
-  const currentQty = affectedReceiptItem.qty;
+  if (theQtyInput.value === '') return
 
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = parseInt(theQtyInput.value);
@@ -600,19 +601,89 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   // Update the item counter
   pageData.itemCounter = calcTotalItem();
+
   // Render Total Item
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
   // Update the total by multiplying the new quantity with its price
   affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
 
+  // Render quantity change
+  theQtyInput.closest('.receipt-item-action').nextElementSibling.innerHTML = affectedReceiptItem.total;
+
   // Render the total
   pageData.receiptTotal = calcTotalDue();
 
-  // Refresh the receipt
-  renderReceipt();
+});
+
+// Receipt Items -- Mobile -- When user click on quantity input
+document.addEventListener('focusin', function (e) {
+
+  if (!e.target.matches('input[type=number]')) return;
+
+  e.target.select();
 
 });
+
+// Receipt Items -- Mobile -- When user click on quantity input
+document.querySelector('#mobile-receipt').addEventListener('focusout', function (e) {
+
+  if (!e.target.matches('input[type=number]')) return;
+
+  // Grab the relevant item index
+  const itemIndex = e.target.closest('.list-group-item').dataset.itemIndex;
+
+  // Grab the affectedReceiptItem
+  const affectedReceiptItem = pageData.receiptItems[itemIndex];
+
+  // Get current quantity of the affectedReceiptItem
+  const currentQty = affectedReceiptItem.qty;
+
+  // Grab the affected catalog item
+  const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
+
+  // When the user insert 0 or leave the input blank,
+  if (parseInt(e.target.value) === 0) {
+
+    // remove the respective item from the reciptItem array
+    pageData.receiptItems.splice(itemIndex, 1);
+
+    // Update the total
+    pageData.receiptTotal = calcTotalDue();
+
+    // Render the change
+    renderReceipt();
+
+    // Update the item counter
+    pageData.itemCounter = calcTotalItem();
+    // Render Total Item
+    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
+
+    // Update the affected catalog item's stock
+    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
+
+    // Render the new catalog item's stock
+    renderCatalog();
+
+  }
+
+});
+
+document.addEventListener('input', function (e) {
+
+  if (!e.target.matches('input[type=number]')) return;
+
+  const numInput = e.target;
+
+  if (numInput.value === '') {
+    numInput.value = 0;
+  }
+
+  if (numInput.value.length === 2 && numInput.value.startsWith('0')) {
+    numInput.value = numInput.value.slice(1);
+  }
+
+})
 
 // Discount Button -- When user clicks Apply Discount
 document.addEventListener('click', function (e) {
