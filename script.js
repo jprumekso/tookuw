@@ -586,6 +586,9 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   }
 
+  // Get current quantity of the affectedReceiptItem
+  const currentQty = affectedReceiptItem.qty;
+
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = parseInt(theQtyInput.value);
 
@@ -599,7 +602,6 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   pageData.itemCounter = calcTotalItem();
   // Render Total Item
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
 
   // Update the total by multiplying the new quantity with its price
   affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
