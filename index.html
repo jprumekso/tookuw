@@ -455,18 +455,19 @@
 
   <!-- Receipt Modal -->
   <div id="receipt-modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title">Receipt Detail</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>×</span>
           </button>
         </div>
+
         <div class="modal-body">
           <!-- Receipt List Wrapper -->
-          <ul id="mobile-receipt" class="receipt-list-group list-group list-group-flush mb-1"
-            style="height:220px;overflow-y:scroll">
+          <ul id="mobile-receipt" class="receipt-list-group list-group list-group-flush mb-1">
 
             <!-- Receipt - Header -->
             <li class="list-group-item pl-1 pr-2 d-flex justify-content-between align-items-center bg-light">
@@ -480,18 +481,21 @@
             <div class="receipt-list-item"></div>
 
             <!-- Discount -->
-            <div class="discount-line border-top"></div>
+            <div class="discount-line"></div>
 
           </ul>
 
+        </div>
+
+        <div class="modal-footer py-1">
           <!-- Receipt - Apply Discount -->
           <li class="list-group-item pl-1 pr-0 d-flex justify-content-between align-items-center" style="border:none">
             <a href="#" class="apply-discount-btn text-muted border-none" style="text-decoration:none;">Apply
               Discount</a>
             <input type="text" class="discount-input form-control text-right w-25">
           </li>
-
         </div>
+
       </div>
     </div>
   </div>
