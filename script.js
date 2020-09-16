@@ -541,9 +541,6 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   // Grab the relevant item index
   const itemIndex = theQtyInput.closest('.list-group-item').dataset.itemIndex;
 
-  // Grab current item qty (before modified by the user)
-  const currentQty = parseInt(theQtyInput.dataset.currentQty);
-
   // Grab the affected receipt item
   const affectedReceiptItem = pageData.receiptItems[itemIndex];
 
@@ -627,11 +624,15 @@ document.addEventListener('click', function (e) {
   // Get the respective discount input
   const discountInput = clickedElement.nextElementSibling;
 
+  // Get existing discount
+  // const existingDiscount = JSON.parse(JSON.stringify(pageData.receiptDiscount));
+  const existingDiscount = pageData.receiptDiscount;
+
   // Grab the value of discount input
   pageData.receiptDiscount = parseInt(discountInput.value);
 
   // Calculate total after discount
-  pageData.receiptTotal -= pageData.receiptDiscount;
+  pageData.receiptTotal = pageData.receiptTotal + existingDiscount - pageData.receiptDiscount;
 
   // Render receipt
   renderReceipt();
@@ -663,17 +664,17 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
   // Grab the relevant item index
   const itemIndex = this.dataset.itemIndex;
 
-  // Grab current item qty (before modified by the user)
-  const currentQty = parseInt(this.dataset.currentQty);
-
-  // Grab the quantity input value
-  const qtyInput = parseInt(this.closest('.modal-content').querySelector('#qty-input--modal').value);
-
   // Grab the affected receipt item
   const affectedReceiptItem = pageData.receiptItems[itemIndex];
 
   // Grab the affected catalog item
   const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
+
+  // Grab current item qty (before modified by the user)
+  const currentQty = affectedReceiptItem.qty;
+
+  // Grab the quantity input value
+  const qtyInput = parseInt(this.closest('.modal-content').querySelector('#qty-input--modal').value);
 
   // When the user insert 0,
   if (qtyInput === 0 || isNaN(qtyInput)) {
