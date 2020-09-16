@@ -807,7 +807,10 @@ document.querySelector('#clear-customer-btn').addEventListener('click', function
     radio.checked = false;
   });
 
-  renderCustomers();
+  // Clear selected customer data
+  pageData.selectedCustomer = {};
+
+  renderSelectedCustomer();
 
 });
 
