@@ -778,6 +778,9 @@ document.querySelector('#select-customer-btn').addEventListener('click', functio
   // Grab the selected customer's name 
   const customerName = this.closest('#customer-select-form').elements.customerRadio.value;
 
+  // Bailed out when there is no customer selected
+  if (!customerName) return;
+
   // Create a deep copy of the matches customer object in the customers array
   const theCustomer = JSON.parse(JSON.stringify(pageData.customers.find(customer => customer.name === customerName)));
 
@@ -803,6 +806,8 @@ document.querySelector('#clear-customer-btn').addEventListener('click', function
   customerRadio.forEach(radio => {
     radio.checked = false;
   });
+
+  renderCustomers();
 
 });
 
