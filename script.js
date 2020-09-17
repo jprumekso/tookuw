@@ -669,6 +669,7 @@ document.querySelector('#mobile-receipt').addEventListener('focusout', function 
 
 });
 
+// Input Number -- Prevent Empty String and Leading 0
 document.addEventListener('input', function (e) {
 
   if (!e.target.matches('input[type=number]')) return;
