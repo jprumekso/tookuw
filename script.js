@@ -572,6 +572,9 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
     // Render the new catalog item's stock
     renderCatalog();
 
+    // Bailed out
+    return;
+
   }
 
   // When the receipt is empty
