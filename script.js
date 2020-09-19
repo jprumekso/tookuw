@@ -382,9 +382,7 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
   let clickedElement = e.target;
 
   // If the clicked element is not a catalog-item and not the childern of catalog-item then bailed out 
-  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) {
-    return
-  }
+  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) return;
 
   // Grab the catalog item object by its index
   const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
@@ -392,16 +390,13 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
 
   // Decrement the selected catalog item stock by 1
   selectedCatalogItem.stock--;
-
   // Render the catalog to reflect change on the selected catalog stock
   renderCatalog();
 
   // Create a receipt item object by deep copying the selectedCatalogItem
   const receiptItem = JSON.parse(JSON.stringify(selectedCatalogItem));
-
   // Remove stock property since it won't be used
   delete receiptItem.stock;
-
   // Assign default receipt quantity to the newly created receipt item
   receiptItem.qty = 1;
 
@@ -444,36 +439,40 @@ document.addEventListener('click', function (e) {
 
     // Decrement the actual quantity at receiptItems
     affectedReceiptItem.qty--;
+    // Update item total
+    affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
+    // Render receipt total
+    pageData.receiptTotal = calcTotalDue();
+    // Refresh receipt
+    renderReceipt();
 
     // Increment the affected catalog item stock by 1
     affectedCatalogItem.stock++;
-
     // Render the catalog to reflect the change on selected catalog stock
     renderCatalog();
 
     // Update the item counter
     pageData.itemCounter = calcTotalItem();
-
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
     // When the item quantity reach 0,
     if (affectedReceiptItem.qty === 0) {
 
-      // remove from the recipt
+      // remove from the receipt
       pageData.receiptItems.splice(itemIndex, 1);
-
       // Update the total Due
       pageData.receiptTotal = calcTotalDue();
+      // Render receipt
+      renderReceipt();
 
       // Update the item counter
       pageData.itemCounter = calcTotalItem();
-
       // Render Total Item
       document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
-      // Render the total
-      renderReceipt();
+      // Bailed out
+      return
 
     }
 
@@ -491,26 +490,22 @@ document.addEventListener('click', function (e) {
 
     }
 
-    // Update item total
-    affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
-
-    // Render the total
-    pageData.receiptTotal = calcTotalDue();
-
-    // Refresh receipt
-    renderReceipt();
-
   };
 
   // If it's the plus button, increment 
   if (clickedElement.matches('.fa-plus') || clickedElement.matches('.qty-btn-plus')) {
 
-    // Decrement the actual quantity at receiptItems
+    // Increment receipt item quantity data
     affectedReceiptItem.qty++;
+    // Update item total
+    affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
+    // Update receipt total
+    pageData.receiptTotal = calcTotalDue();
+    // Render receipt
+    renderReceipt();
 
     // Increment the affected catalog item stock by 1
     affectedCatalogItem.stock--;
-
     // Render the catalog to reflect the change on selected catalog stock
     renderCatalog();
 
@@ -519,14 +514,6 @@ document.addEventListener('click', function (e) {
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
-    // Update item total
-    affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
-
-    // Update the total
-    pageData.receiptTotal = calcTotalDue();
-
-    // Render receipt
-    renderReceipt();
   }
 
 });
@@ -554,23 +541,20 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
     // remove the respective item from the reciptItem array
     pageData.receiptItems.splice(itemIndex, 1);
-
-    // Update the total
+    // Update receipt total
     pageData.receiptTotal = calcTotalDue();
-
     // Render the change
     renderReceipt();
+
+    // Update the affected catalog item's stock
+    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
+    // Render the new catalog item's stock
+    renderCatalog();
 
     // Update the item counter
     pageData.itemCounter = calcTotalItem();
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-    // Update the affected catalog item's stock
-    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-
-    // Render the new catalog item's stock
-    renderCatalog();
 
     // Bailed out
     return;
@@ -595,27 +579,22 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = parseInt(theQtyInput.value);
+  // Update the item total
+  affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
+  // Render the new item total
+  theQtyInput.closest('.receipt-item-action').nextElementSibling.innerHTML = affectedReceiptItem.total;
+  // Render receipt total
+  pageData.receiptTotal = calcTotalDue();
 
   // Update the affected catalog item's stock
   affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty - affectedReceiptItem.qty;
-
   // Render the new catalog item's stock
   renderCatalog();
 
   // Update the item counter
   pageData.itemCounter = calcTotalItem();
-
   // Render Total Item
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-  // Update the total by multiplying the new quantity with its price
-  affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
-
-  // Render quantity change
-  theQtyInput.closest('.receipt-item-action').nextElementSibling.innerHTML = affectedReceiptItem.total;
-
-  // Render the total
-  pageData.receiptTotal = calcTotalDue();
 
 });
 
@@ -650,24 +629,20 @@ document.querySelector('#mobile-receipt').addEventListener('focusout', function 
 
     // remove the respective item from the reciptItem array
     pageData.receiptItems.splice(itemIndex, 1);
-
     // Update the total
     pageData.receiptTotal = calcTotalDue();
-
     // Render the change
     renderReceipt();
+
+    // Update the affected catalog item's stock
+    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
+    // Render the new catalog item's stock
+    renderCatalog();
 
     // Update the item counter
     pageData.itemCounter = calcTotalItem();
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-    // Update the affected catalog item's stock
-    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-
-    // Render the new catalog item's stock
-    renderCatalog();
-
   }
 
 });
@@ -702,7 +677,6 @@ document.addEventListener('click', function (e) {
   const discountInput = clickedElement.nextElementSibling;
 
   // Get existing discount
-  // const existingDiscount = JSON.parse(JSON.stringify(pageData.receiptDiscount));
   const existingDiscount = pageData.receiptDiscount;
 
   // Grab the value of discount input
@@ -758,24 +732,20 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
 
     // remove the respective item from the reciptItem array
     pageData.receiptItems.splice(itemIndex, 1);
-
     // Update the total
     pageData.receiptTotal = calcTotalDue();
-
     // Render the change
     renderReceipt();
 
-    // Update the item counter
-    pageData.itemCounter = calcTotalItem();
-
-    // Render Total Item
-    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
     // Update the affected catalog item's stock
     affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-
     // Render the new catalog item's stock
     renderCatalog();
+
+    // Update the item counter
+    pageData.itemCounter = calcTotalItem();
+    // Render Total Item
+    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
     // bailed out
     return;
@@ -783,10 +753,15 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
 
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = qtyInput;
+  // Update item total
+  affectedReceiptItem.total = affectedReceiptItem.qty * parseInt(affectedReceiptItem.price);
+  // Render the total
+  pageData.receiptTotal = calcTotalDue();
+  // Refresh the receipt
+  renderReceipt();
 
   // Update the affected catalog item's stock
   affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty - affectedReceiptItem.qty;
-
   // Render the new catalog item's stock
   renderCatalog();
 
@@ -794,15 +769,6 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
   pageData.itemCounter = calcTotalItem();
   // Render Total Item
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-  // Update the total by multiplying the new quantity with its price
-  affectedReceiptItem.total = affectedReceiptItem.qty * parseInt(affectedReceiptItem.price);
-
-  // Render the total
-  pageData.receiptTotal = calcTotalDue();
-
-  // Refresh the receipt
-  renderReceipt();
 
 });
 
