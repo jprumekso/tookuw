@@ -21,7 +21,7 @@
 <body>
 
   <!-- Main Top Navigation Bar -->
-  <nav id="main-navbar" class="navbar navbar-expand navbar-dark bg-primary shadow py-0">
+  <nav id="main-navbar" class="navbar navbar-dark bg-primary shadow py-0">
 
     <!-- Toggler Button -->
     <button class="navbar-toggler d-block text-light pl-2 mr-2" style="border:none" data-toggle="collapse"
@@ -34,20 +34,15 @@
     <a class="navbar-brand d-none d-sm-block text-uppercase" href="#">Tookuw</a>
 
     <!-- Profile Button -->
-    <div class="ml-auto">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white d-flex align-items-center" data-toggle="dropdown">
-            <span class="text-light font-weight-bold mr-3">Jalu</span>
-            <i class="fas fa-user-ninja bg-dark p-3 rounded-circle"></i>
-          </a>
-          <div class="dropdown-menu" style="min-width: 7.5rem;">
-            <a class="dropdown-item" href="#"><small>Profile</small></a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#"><small>Logout</small></a>
-          </div>
-        </li>
-      </ul>
+    <div class="dropdown ml-auto">
+      <a href="#" class="nav-link dropdown-toggle text-white d-flex align-items-center" data-toggle="dropdown">
+        <span class="text-light font-weight-bold mr-3">Jalu</span>
+        <i class="fas fa-user-ninja bg-dark p-3 rounded-circle"></i>
+      </a>
+      <div class="dropdown-menu" style="min-width: 7.5rem;">
+        <a class="dropdown-item" href="#"><small>Profile</small></a>
+        <a class="dropdown-item" href="#"><small>Logout</small></a>
+      </div>
     </div>
     <!-- End of Profile Button -->
 
