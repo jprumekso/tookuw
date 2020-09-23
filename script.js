@@ -299,6 +299,14 @@ function renderDiscount() {
   const allDiscountLine = document.querySelectorAll('.discount-line');
   const allDiscountInput = document.querySelectorAll('.discount-input');
 
+  // When the receipt is empty
+  if (pageData.receiptItems.length == 0) {
+
+    // Set the receipt discount to 0 
+    pageData.receiptDiscount = 0;
+
+  }
+
   // If there is no discount
   if (!pageData.receiptDiscount) {
 
@@ -527,20 +535,6 @@ document.addEventListener('click', function (e) {
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
-    // // When the receipt is empty
-    // if (pageData.receiptItems.length < 1) {
-
-    //   // Set the receipt discount to 0 
-    //   pageData.receiptDiscount = 0;
-
-    //   // Render
-    //   renderDiscount();
-
-    //   // bailed out
-    //   return;
-
-    // }
-
   };
 
   // If it's the plus button, increment 
@@ -590,20 +584,6 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   // Grab the affected catalog item
   const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
-
-  // When the receipt is empty
-  if (pageData.receiptItems.length < 1) {
-
-    // Set the receipt discount to 0 
-    pageData.receiptDiscount = 0;
-
-    // Render
-    renderDiscount();
-
-    // bailed out
-    return;
-
-  }
 
   if (isNaN(parseInt(theQtyInput.value))) return
 
