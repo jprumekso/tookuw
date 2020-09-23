@@ -193,18 +193,42 @@ function renderReceipt() {
 }
 
 // The function that render quantity change of certain receipt item
-function renderReceiptItemQty(receiptItem) {
+function renderReceiptItemQty(receiptItemObj) {
 
-  // Grab the receipt item
-  const theReceiptItem = document.querySelector(`#receipt-item-${receiptItem.id}`);
+  // Grab the receipt list group
+  const receiptListGroup = document.querySelectorAll('.receipt-list-group');
 
-  // Render its quantity
-  theReceiptItem.querySelector('.receipt-item-qty').innerHTML = receiptItem.qty;
+  receiptListGroup.forEach(theReceiptList => {
+
+    // Grab the receipt item
+    const receiptItemEl = theReceiptList.querySelector(`#receipt-item-${receiptItemObj.id}`);
+
+    // Render its quantity
+    receiptItemEl.querySelector('.receipt-item-qty').innerHTML = receiptItemObj.qty; // dekstop version
+    receiptItemEl.querySelector('.mobile-qty-input').value = receiptItemObj.qty; // mobile version
+
+  });
+
+  // When the item quantity reach 0,
+  if (receiptItemObj.qty === 0) {
+
+    const receiptItemIndex = pageData.receiptItems.findIndex(receiptItem => receiptItem.id == receiptItemObj.id);
+
+    // remove from the receipt
+    pageData.receiptItems.splice(receiptItemIndex, 1);
+
+    // render receipt
+    renderReceipt();
+
+  }
 
 }
 
 // The function that render total change of certain receipt item
 function renderReceiptItemTotal(receiptItem) {
+
+  // When receipt item is 0
+  if (receiptItem.qty === 0) return;
 
   // Grab the receipt list group
   const receiptListGroup = document.querySelectorAll('.receipt-list-group');
@@ -258,8 +282,6 @@ function renderSelectedCustomer() {
 
 // The function that render total
 function renderTotal() {
-
-  console.log('it runs');
 
   // Grab all total-due element
   const allTotalDue = document.querySelectorAll('.total-due');
@@ -505,39 +527,19 @@ document.addEventListener('click', function (e) {
     // Render Total Item
     document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
 
-    // When the item quantity reach 0,
-    if (affectedReceiptItem.qty === 0) {
+    // // When the receipt is empty
+    // if (pageData.receiptItems.length < 1) {
 
-      // remove from the receipt
-      pageData.receiptItems.splice(itemIndex, 1);
-      // Update the total Due
-      pageData.receiptTotal = calcTotalDue();
-      // Render receipt
-      renderReceipt();
+    //   // Set the receipt discount to 0 
+    //   pageData.receiptDiscount = 0;
 
-      // Update the item counter
-      pageData.itemCounter = calcTotalItem();
-      // Render Total Item
-      document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
+    //   // Render
+    //   renderDiscount();
 
-      // Bailed out
-      return
+    //   // bailed out
+    //   return;
 
-    }
-
-    // When the receipt is empty
-    if (pageData.receiptItems.length < 1) {
-
-      // Set the receipt discount to 0 
-      pageData.receiptDiscount = 0;
-
-      // Render
-      renderDiscount();
-
-      // bailed out
-      return;
-
-    }
+    // }
 
   };
 
@@ -589,31 +591,6 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   // Grab the affected catalog item
   const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
 
-  // When the user insert 0 or leave the input blank,
-  if (parseInt(theQtyInput.value) === 0) {
-
-    // remove the respective item from the reciptItem array
-    pageData.receiptItems.splice(itemIndex, 1);
-    // Update receipt total
-    pageData.receiptTotal = calcTotalDue();
-    // Render the change
-    renderReceipt();
-
-    // Update the affected catalog item's stock
-    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-    // Render the new catalog item's stock
-    renderCatalogItemStock(affectedCatalogItem);
-
-    // Update the item counter
-    pageData.itemCounter = calcTotalItem();
-    // Render Total Item
-    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-    // Bailed out
-    return;
-
-  }
-
   // When the receipt is empty
   if (pageData.receiptItems.length < 1) {
 
@@ -628,7 +605,7 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   }
 
-  if (theQtyInput.value === '') return
+  if (isNaN(parseInt(theQtyInput.value))) return
 
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = parseInt(theQtyInput.value);
@@ -646,7 +623,6 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   // Update the affected catalog item's stock
   affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty - affectedReceiptItem.qty;
   // Render the new catalog item's stock
-  // renderCatalog();
   renderCatalogItemStock(affectedCatalogItem);
 
   // Update the item counter
@@ -670,39 +646,7 @@ document.querySelector('#mobile-receipt').addEventListener('focusout', function 
 
   if (!e.target.matches('input[type=number]')) return;
 
-  // Grab the relevant item index
-  const itemIndex = e.target.closest('.list-group-item').dataset.itemIndex;
-
-  // Grab the affectedReceiptItem
-  const affectedReceiptItem = pageData.receiptItems[itemIndex];
-
-  // Get current quantity of the affectedReceiptItem
-  const currentQty = affectedReceiptItem.qty;
-
-  // Grab the affected catalog item
-  const affectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.title === affectedReceiptItem.title);
-
-  // When the user insert 0 or leave the input blank,
-  if (parseInt(e.target.value) === 0) {
-
-    // remove the respective item from the reciptItem array
-    pageData.receiptItems.splice(itemIndex, 1);
-    // Update the total
-    pageData.receiptTotal = calcTotalDue();
-    // Render the change
-    renderReceipt();
-
-    // Update the affected catalog item's stock
-    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-    // Render the new catalog item's stock
-    // renderCatalog();
-    renderCatalogItemStock(affectedCatalogItem);
-
-    // Update the item counter
-    pageData.itemCounter = calcTotalItem();
-    // Render Total Item
-    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-  }
+  renderReceipt();
 
 });
 
@@ -786,31 +730,6 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
   // Grab the quantity input value
   const qtyInput = parseInt(this.closest('.modal-content').querySelector('#qty-input--modal').value);
 
-  // When the user insert 0,
-  if (qtyInput === 0 || isNaN(qtyInput)) {
-
-    // remove the respective item from the reciptItem array
-    pageData.receiptItems.splice(itemIndex, 1);
-    // Update the total
-    pageData.receiptTotal = calcTotalDue();
-    // Render the change
-    renderReceipt();
-
-    // Update the affected catalog item's stock
-    affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty;
-    // Render the new catalog item's stock
-    // renderCatalog();
-    renderCatalogItemStock(affectedCatalogItem);
-
-    // Update the item counter
-    pageData.itemCounter = calcTotalItem();
-    // Render Total Item
-    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-    // bailed out
-    return;
-  }
-
   // Update the relevant item quantity at receiptItems with user inputed value
   affectedReceiptItem.qty = qtyInput;
   // Render receipt item qty
@@ -827,7 +746,6 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
   // Update the affected catalog item's stock
   affectedCatalogItem.stock = affectedCatalogItem.stock + currentQty - affectedReceiptItem.qty;
   // Render the new catalog item's stock
-  // renderCatalog();
   renderCatalogItemStock(affectedCatalogItem);
 
   // Update the item counter
