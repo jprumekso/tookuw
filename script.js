@@ -363,7 +363,7 @@ function addToReceipt(catalogItem) {
     // In that case, we want to increment the quantity of that item by 1
     existingReceiptItem.qty++;
     // And update the total my multiplying its new quantity with its price
-    existingReceiptItem.total = existingReceiptItem.qty * parseInt(existingReceiptItem.price);
+    existingReceiptItem.total = existingReceiptItem.qty * existingReceiptItem.price;
     // Update the total
     pageData.receiptTotal = calcTotalDue();
     // Update the item counter
@@ -376,7 +376,7 @@ function addToReceipt(catalogItem) {
 
   // Add total key to catalogItem 
   // and fill it (as the name suggest) with the multiplication of its quantity and its price
-  catalogItem.total = catalogItem.qty * parseInt(catalogItem.price);
+  catalogItem.total = catalogItem.qty * catalogItem.price;
 
   // Push the catalogItem into receiptItems array
   pageData.receiptItems.push(catalogItem);
@@ -715,7 +715,7 @@ document.querySelector('#set-item-qty-btn').addEventListener('click', function (
   // Render receipt item qty
   renderReceiptItemQty(affectedReceiptItem);
   // Update receipt item total
-  affectedReceiptItem.total = affectedReceiptItem.qty * parseInt(affectedReceiptItem.price);
+  affectedReceiptItem.total = affectedReceiptItem.qty * affectedReceiptItem.price;
   // Render receipt item total
   renderReceiptItemTotal(affectedReceiptItem)
   // Update receipt total
