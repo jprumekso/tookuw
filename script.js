@@ -152,7 +152,7 @@ function renderCatalogItemStock(catalogItem) {
 }
 
 // The function that insert new receipt item
-function addNewReceiptItem(catalogItemObj) {
+function addReceiptItem(catalogItemObj) {
 
   // Create a receipt item object by deep copying the selectedCatalogItem
   const receiptItem = JSON.parse(JSON.stringify(catalogItemObj));
@@ -194,7 +194,6 @@ function updateReceiptItemQty(receiptItemObj, value, type = null) {
 
   // Render item quantity
   renderReceiptItemQty(receiptItemObj);
-  console.log(receiptItemObj.qty);
   // And update the total by multiplying its new quantity with its price
   receiptItemObj.total = receiptItemObj.qty * receiptItemObj.price;
   // Render receipt item total
@@ -221,44 +220,6 @@ function updateReceiptItemQty(receiptItemObj, value, type = null) {
   pageData.itemCounter = calcTotalItem();
   // Render Total Item
   document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-}
-
-// The function that push selected catalog item data into receiptItems array
-function addToReceipt(catalogItem) {
-
-  // Check whether the incoming catalogItem is already in the receiptItems array
-  // by using the catalog title as 'filter' on array.find() method 
-  let existingReceiptItem = pageData.receiptItems.find(receiptItem => receiptItem.id === catalogItem.id);
-
-  // If array.find() found the same title, then the item must be already in the receiptItems array
-  if (existingReceiptItem) {
-    // In that case, we want to increment the quantity of that item by 1
-    existingReceiptItem.qty++;
-    // And update the total my multiplying its new quantity with its price
-    existingReceiptItem.total = existingReceiptItem.qty * existingReceiptItem.price;
-    // Update the total
-    pageData.receiptTotal = calcTotalDue();
-    // Update the item counter
-    pageData.itemCounter = calcTotalItem();
-
-    // Then bailed out
-    return;
-
-  }
-
-  // Add total key to catalogItem 
-  // and fill it (as the name suggest) with the multiplication of its quantity and its price
-  catalogItem.total = catalogItem.qty * catalogItem.price;
-
-  // Push the catalogItem into receiptItems array
-  pageData.receiptItems.push(catalogItem);
-
-  // Update the item counter
-  pageData.itemCounter = calcTotalItem();
-
-  // Update the total
-  pageData.receiptTotal = calcTotalDue();
-
 }
 
 // The function that count the total of all receipt item quantity
@@ -547,7 +508,7 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
 
   }
 
-  addNewReceiptItem(selectedCatalogItem);
+  addReceiptItem(selectedCatalogItem);
 
 });
 
