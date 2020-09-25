@@ -462,27 +462,60 @@ document.querySelector('#catalog').addEventListener('click', function (e) {
   const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
   const selectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.id == catalogItemId);
 
+  // Create a receipt item object by deep copying the selectedCatalogItem
+  const receiptItem = JSON.parse(JSON.stringify(selectedCatalogItem));
+  // Assign initial receipt item quantity
+  receiptItem.qty = 1;
+  // Assign initial receipt item total
+  receiptItem.total = receiptItem.qty * receiptItem.price;
+
+  // Check whether the incoming catalogItem is already in the receiptItems array
+  // by using the catalog title as 'filter' on array.find() method 
+  const existingReceiptItem = pageData.receiptItems.find(receiptItem => receiptItem.id == catalogItemId);
+
+  // If array.find() found the same title, then the item must be already in the receiptItems array
+  if (existingReceiptItem) {
+
+    // In that case, we want to increment the quantity of that item by 1
+    existingReceiptItem.qty++;
+    // Render item quantity
+    renderReceiptItemQty(existingReceiptItem);
+    // And update the total by multiplying its new quantity with its price
+    existingReceiptItem.total = existingReceiptItem.qty * existingReceiptItem.price;
+    // Render receipt item total
+    renderReceiptItemTotal(existingReceiptItem);
+    // Update receipt total
+    pageData.receiptTotal = calcTotalDue();
+    // Render receipt total
+    renderTotal()
+
+    // Decrement the selected catalog item stock by 1
+    selectedCatalogItem.stock--;
+    // Render the catalog to reflect change on the selected catalog stock
+    renderCatalogItemStock(selectedCatalogItem);
+
+    // Update the item counter
+    pageData.itemCounter = calcTotalItem();
+    // Render Total Item
+    document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
+
+    // Then bailed out
+    return;
+
+  }
+
+  // Push the receiptItem into receiptItems array
+  pageData.receiptItems.push(receiptItem);
+
+  // Update the total
+  pageData.receiptTotal = calcTotalDue();
+  // Render receiptItems array into list of receipt item
+  renderReceipt()
+
   // Decrement the selected catalog item stock by 1
   selectedCatalogItem.stock--;
   // Render the catalog to reflect change on the selected catalog stock
   renderCatalogItemStock(selectedCatalogItem);
-  // renderCatalog();
-
-  // Create a receipt item object by deep copying the selectedCatalogItem
-  const receiptItem = JSON.parse(JSON.stringify(selectedCatalogItem));
-  // Remove stock property since it won't be used
-  delete receiptItem.stock;
-  // Assign default receipt quantity to the newly created receipt item
-  receiptItem.qty = 1;
-
-  // Add item to receiptItems array 
-  addToReceipt(receiptItem);
-
-  // Render Total Item
-  document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-  // Render receiptItems array into list of receipt item
-  renderReceipt()
 
 });
 
