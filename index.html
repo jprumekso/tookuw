@@ -224,9 +224,8 @@
   </div>
   <!-- End of Main Content Wrapper -->
 
-  <!-- User Modal -->
   <!-- Customer Modal -->
-  <div class="modal fade" id="user-modal" tabindex="-1">
+  <div class=" modal fade" id="user-modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
@@ -367,13 +366,13 @@
         <div class="modal-body">
 
           <div class="d-flex justify-content-around mb-4">
-            <div class="text-center bg-light py-4 w-50 mr-2">
+            <div class="text-center bg-light py-4 flex-grow-1 mr-2">
               <p class="mb-0"><small>Total Paid</small></p>
               <h2 id="total-paid--modal" class="mb-0 font-weight-bold">0</h2>
             </div>
-            <div class="text-center bg-light py-4 w-50">
-              <p class="mb-0"><small>Change</small></p>
-              <h2 id="payment-change" class="mb-0 font-weight-bold">0</h2>
+            <div class="text-center bg-light py-4 flex-grow-1">
+              <p class="mb-0"><small id="payment-effect-title">Change/Due</small></p>
+              <h2 id="payment-effect-amount" class="mb-0 font-weight-bold">0</h2>
             </div>
           </div>
 
@@ -397,13 +396,6 @@
               <div>
                 <small class="text-muted">From</small>
                 <h6 id="from-customer--modal" class="my-0">-</h6>
-              </div>
-              <i class="fas fa-check-circle"></i>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <div>
-                <small class="text-muted">Payment Due</small>
-                <h6 id="payment-due--modal" class="my-0">0</h6>
               </div>
               <i class="fas fa-check-circle"></i>
             </li>

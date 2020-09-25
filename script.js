@@ -876,13 +876,15 @@ document.querySelector('#payment-form').addEventListener('submit', function (e) 
   // Calculate the change when the payment received is greater than the current total
   if (pageData.paymentReceived > pageData.receiptTotal) {
     pageData.paymentChange = pageData.paymentReceived - pageData.receiptTotal;
-    document.querySelector('#payment-change').innerHTML = pageData.paymentChange;
+    document.querySelector('#payment-effect-title').innerHTML = 'Change';
+    document.querySelector('#payment-effect-amount').innerHTML = pageData.paymentChange;
   }
 
   // Calculate payment due
   if (pageData.receiptTotal > pageData.paymentReceived) {
     pageData.paymentDue = pageData.receiptTotal - pageData.paymentReceived;
-    document.querySelector('#payment-due--modal').innerHTML = pageData.paymentDue;
+    document.querySelector('#payment-effect-title').innerHTML = 'Payment Due';
+    document.querySelector('#payment-effect-amount').innerHTML = pageData.paymentDue;
   }
 
   // Hide the Payment Modal
