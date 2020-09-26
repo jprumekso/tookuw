@@ -902,7 +902,5 @@ renderCustomers();
 renderSelectedCustomer();
 renderReceiptTotalDue();
 renderReceiptDiscount();
-document.querySelector('#payment-change').innerHTML = pageData.paymentChange;
-document.querySelector('#payment-due--modal').innerHTML = pageData.paymentDue;
 document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
 document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
