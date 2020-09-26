@@ -1,155 +1,120 @@
-// Initial state of all data on the page
-const pageData = {
-  catalogItems: [
-    {
-      id: 11,
-      title: 'Ripe Banana',
-      stock: 150,
-      price: 12500
-    },
-    {
-      id: 12,
-      title: 'Fresh Apple',
-      stock: 75,
-      price: 6500
-    },
-    {
-      id: 13,
-      title: 'Juicy Orange',
-      stock: 100,
-      price: 7500
-    },
-    {
-      id: 14,
-      title: 'Giant Mango',
-      stock: 5,
-      price: 25000
-    },
-    {
-      id: 15,
-      title: 'Seedless Guava',
-      stock: 15,
-      price: 45000
-    },
-    {
-      id: 16,
-      title: 'Creamy Durian',
-      stock: 77,
-      price: 12000
-    },
-    {
-      id: 17,
-      title: 'Sweety Grape',
-      stock: 35,
-      price: 22000
-    },
-    {
-      id: 18,
-      title: 'Tasty Pear',
-      stock: 0,
-      price: 5000
-    },
-  ],
-  customers: [
-    {
-      name: 'Leanne',
-      address: 'East Java',
-      phone: '08123485858'
-    },
-    {
-      name: 'Erwin',
-      address: 'Bali',
-      phone: '08123485858'
-    },
-    {
-      name: 'Sasha',
-      address: 'Senduro Lumajang',
-      phone: '08123485858'
-    },
-    {
-      name: 'Eren',
-      address: 'Paris',
-      phone: '08123485858'
-    },
-    {
-      name: 'Kid',
-      address: 'Saudi Arabia',
-      phone: '08123485858'
-    },
-    {
-      name: 'Jack',
-      address: 'Abu Dhabi',
-      phone: '08123485858'
-    },
-    {
-      name: 'Captain',
-      address: 'Istanbul',
-      phone: '08123485858'
-    },
-    {
-      name: 'Drake',
-      address: 'Brunei Darussalam',
-      phone: '08123485858'
-    },
-  ],
-  filteredCustomer: [],
-  selectedCustomer: {},
-  filteredCatalog: [],
-  receiptItems: [],
-  itemCounter: 0,
-  receiptDiscount: 0,
-  receiptTotal: 0,
-  paymentReceived: 0,
-  paymentChange: 0,
-  paymentDue: 0,
-  catalogSearchQuery: '',
-  customerSearchQuery: ''
-}
+import { pageData } from './tookuw-store.js';
+import { Catalog } from './components/Catalog.js';
 
+// Initial state of all data on the page
+
+pageData.catalogItems = [
+  {
+    id: 11,
+    title: 'Ripe Banana',
+    stock: 150,
+    price: 12500
+  },
+  {
+    id: 12,
+    title: 'Fresh Apple',
+    stock: 75,
+    price: 6500
+  },
+  {
+    id: 13,
+    title: 'Juicy Orange',
+    stock: 100,
+    price: 7500
+  },
+  {
+    id: 14,
+    title: 'Giant Mango',
+    stock: 5,
+    price: 25000
+  },
+  {
+    id: 15,
+    title: 'Seedless Guava',
+    stock: 15,
+    price: 45000
+  },
+  {
+    id: 16,
+    title: 'Creamy Durian',
+    stock: 77,
+    price: 12000
+  },
+  {
+    id: 17,
+    title: 'Sweety Grape',
+    stock: 35,
+    price: 22000
+  },
+  {
+    id: 18,
+    title: 'Tasty Pear',
+    stock: 0,
+    price: 5000
+  },
+];
+pageData.customers = [
+  {
+    name: 'Leanne',
+    address: 'East Java',
+    phone: '08123485858'
+  },
+  {
+    name: 'Erwin',
+    address: 'Bali',
+    phone: '08123485858'
+  },
+  {
+    name: 'Sasha',
+    address: 'Senduro Lumajang',
+    phone: '08123485858'
+  },
+  {
+    name: 'Eren',
+    address: 'Paris',
+    phone: '08123485858'
+  },
+  {
+    name: 'Kid',
+    address: 'Saudi Arabia',
+    phone: '08123485858'
+  },
+  {
+    name: 'Jack',
+    address: 'Abu Dhabi',
+    phone: '08123485858'
+  },
+  {
+    name: 'Captain',
+    address: 'Istanbul',
+    phone: '08123485858'
+  },
+  {
+    name: 'Drake',
+    address: 'Brunei Darussalam',
+    phone: '08123485858'
+  },
+];
+pageData.filteredCustomer = [];
+pageData.selectedCustomer = {};
+pageData.filteredCatalog = [];
+pageData.receiptItems = [];
+pageData.itemCounter = 0;
+pageData.receiptDiscount = 0;
+pageData.receiptTotal = 0;
+pageData.paymentReceived = 0;
+pageData.paymentChange = 0;
+pageData.paymentDue = 0;
+pageData.catalogSearchQuery = '';
+pageData.customerSearchQuery = '';
+
+const CatalogComponent = new Catalog();
 /**
  * RENDER / UI RELATED FUNCTIONS
  * 
  * These group of functions are used to handle the representation of data
  * Such as generating a markup list of data, injecting markup into the dom, etc
  */
-
-// The function that render catalogItems data into Catalog Item markup
-function renderCatalog() {
-
-  // Use the filteredCatalog instead when user type search query
-  const catalogData = pageData.filteredCatalog.length == 0 && !pageData.catalogSearchQuery ? pageData.catalogItems : pageData.filteredCatalog;
-
-  // Transform catalog item data into catalog item markup
-  const catalogItemMarkup = catalogData.map(function (catalogItem) {
-
-    const isDisabled = catalogItem.stock === 0 ? 'disabled' : '';
-
-    return `
-      <a href="#" id="catalog-item-${catalogItem.id}" class="catalog-item list-group-item list-group-item-action px-0 d-flex flex-wrap align-items-center ${isDisabled}" data-catalog-id="${catalogItem.id}">
-        <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
-        <div>
-          <p>${catalogItem.title}</p>
-          <p class="text-muted">Stock: <span class="catalog-item-stock">${catalogItem.stock}</span>pcs</p>
-        </div>
-        <p class="ml-auto">${catalogItem.price}</p>
-      </a>
-    `;
-
-  }).join('');
-
-  document.querySelector('#catalog').innerHTML = catalogItemMarkup;
-}
-
-//  The function that render certain catalogItem's stock
-function renderCatalogItemStock(catalogItem) {
-
-  // Get the catalog item element
-  const theCatalogItem = document.querySelector(`#catalog-item-${catalogItem.id}`);
-
-  // Render its stock content
-  theCatalogItem.querySelector('.catalog-item-stock').innerHTML = catalogItem.stock;
-
-}
 
 // The function that insert new receipt item
 function addReceiptItem(catalogItemObj) {
@@ -474,10 +439,10 @@ document.querySelector('#search-catalog').addEventListener('keyup', function (e)
   pageData.catalogSearchQuery = this.value.toLowerCase();
 
   // Filter the catalogItem data
-  pageData.filteredCatalog = pageData.catalogItems.filter(catalogItem => catalogItem.title.toLowerCase().includes(pageData.catalogSearchQuery));
+  CatalogComponent.filter();
 
   // Render Catalog
-  renderCatalog();
+  CatalogComponent.render();
 
 });
 
@@ -897,7 +862,7 @@ document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 });
 
 // Render initial state of the app
-renderCatalog();
+CatalogComponent.render();
 renderCustomers();
 renderSelectedCustomer();
 renderReceiptTotalDue();
