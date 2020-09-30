@@ -1,55 +1,14 @@
 import { Catalog } from './components/Catalog.js';
 import { Receipt } from './components/Receipt.js';
+import { Customer } from './components/Customer.js';
 
 // Initial state of all data on the page
-pageData.customers = [
-  {
-    name: 'Leanne',
-    address: 'East Java',
-    phone: '08123485858'
-  },
-  {
-    name: 'Erwin',
-    address: 'Bali',
-    phone: '08123485858'
-  },
-  {
-    name: 'Sasha',
-    address: 'Senduro Lumajang',
-    phone: '08123485858'
-  },
-  {
-    name: 'Eren',
-    address: 'Paris',
-    phone: '08123485858'
-  },
-  {
-    name: 'Kid',
-    address: 'Saudi Arabia',
-    phone: '08123485858'
-  },
-  {
-    name: 'Jack',
-    address: 'Abu Dhabi',
-    phone: '08123485858'
-  },
-  {
-    name: 'Captain',
-    address: 'Istanbul',
-    phone: '08123485858'
-  },
-  {
-    name: 'Drake',
-    address: 'Brunei Darussalam',
-    phone: '08123485858'
-  },
-];
-pageData.filteredCustomer = [];
-pageData.selectedCustomer = {};
-pageData.paymentReceived = 0;
-pageData.paymentChange = 0;
-pageData.paymentDue = 0;
-pageData.customerSearchQuery = '';
+const pageData = {
+  paymentReceived: 0,
+  paymentChange: 0,
+  paymentDue: 0,
+  customerSearchQuery: '',
+}
 
 const catalog = new Catalog({
   items: [
@@ -113,50 +72,58 @@ const receipt = new Receipt({
   element: document.querySelectorAll('.receipt-list-group')
 });
 
+const customer = new Customer({
+  customers: [
+    {
+      name: 'Leanne',
+      address: 'East Java',
+      phone: '08123485858'
+    },
+    {
+      name: 'Erwin',
+      address: 'Bali',
+      phone: '08123485858'
+    },
+    {
+      name: 'Sasha',
+      address: 'Senduro Lumajang',
+      phone: '08123485858'
+    },
+    {
+      name: 'Eren',
+      address: 'Paris',
+      phone: '08123485858'
+    },
+    {
+      name: 'Kid',
+      address: 'Saudi Arabia',
+      phone: '08123485858'
+    },
+    {
+      name: 'Jack',
+      address: 'Abu Dhabi',
+      phone: '08123485858'
+    },
+    {
+      name: 'Captain',
+      address: 'Istanbul',
+      phone: '08123485858'
+    },
+    {
+      name: 'Drake',
+      address: 'Brunei Darussalam',
+      phone: '08123485858'
+    },
+  ],
+  element: document.querySelector('#customer-list')
+});
+
 /**
  * RENDER / UI RELATED FUNCTIONS
  * 
  * These group of functions are used to handle the representation of data
  * Such as generating a markup list of data, injecting markup into the dom, etc
  */
-
-// The function that render customer list
-function renderCustomers() {
-
-  // Use the filteredCatalog instead when user type search query
-  const customerList = pageData.filteredCustomer.length == 0 && !pageData.customerSearchQuery ? pageData.customers : pageData.filteredCustomer;
-
-  // Turn customers data into customer list
-  const customerListMarkup = customerList.map(function (customer, index) {
-    return `<li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="customerRadio" id="customer-${index}" value="${customer.name}">
-                <label class="form-check-label" for="customer-${index}">${customer.name}</label>
-              </div>
-            </li>`;
-  }).join('');
-
-  document.querySelector('#customer-list').innerHTML = customerListMarkup;
-}
-
-// The function that render the selected customer
-function renderSelectedCustomer() {
-
-  // Grab the 'From' line at the Payment Success modal
-  const fromCustomer = document.querySelector('#from-customer--modal');
-
-  // Grab the add customer modal
-  const allAddCustomerBtn = document.querySelectorAll('.add-customer-btn');
-
-  // Assign the name or '-' to the From line
-  fromCustomer.innerHTML = Object.entries(pageData.selectedCustomer).length !== 0 ? pageData.selectedCustomer.name : '-';
-
-  // Change User Plus icon to User Checked
-  allAddCustomerBtn.forEach(function (addCustomerBtn) {
-    addCustomerBtn.innerHTML = Object.entries(pageData.selectedCustomer).length !== 0 ? '<i class="fas fa-user-check text-success"></i>' : '<i class="fas fa-user-plus"></i>';
-  });
-
-}
 
 // Function that construct the alert modal content
 function createAlert(alert) {
@@ -403,29 +370,18 @@ document.querySelector('#new-customer-form').addEventListener('submit', function
   }
 
   // Push newCustomer object into pageData.customers array
-  pageData.customers.push(newCustomer);
+  customer.customers.push(newCustomer);
 
   // Reset form fields
   this.reset();
 
   // Render customer list to display the newly added customer
-  renderCustomers();
+  customer.render();
 
 });
 
 // Search Customer -- When users type the search query to filter customer list
-document.querySelector('#search-customer').addEventListener('keyup', function (e) {
-
-  // Grab the search input value and turn to lowercase
-  pageData.customerSearchQuery = this.value.toLowerCase();
-
-  // Filter the customer data
-  pageData.filteredCustomer = pageData.customers.filter(customer => customer.name.toLowerCase().includes(pageData.customerSearchQuery));
-
-  // Render customers
-  renderCustomers();
-
-})
+document.querySelector('#search-customer').addEventListener('keyup', event => { customer.filter(event.target.value) })
 
 // Select Customer Button -- When user selects a customer
 document.querySelector('#select-customer-btn').addEventListener('click', function (e) {
@@ -438,36 +394,18 @@ document.querySelector('#select-customer-btn').addEventListener('click', functio
   // Bailed out when there is no customer selected
   if (!customerName) return;
 
-  // Create a deep copy of the matches customer object in the customers array
-  const theCustomer = JSON.parse(JSON.stringify(pageData.customers.find(customer => customer.name === customerName)));
-
-  // and assign the newly created copy to the pageData.selectedCustomer
-  pageData.selectedCustomer = theCustomer;
-
-  // Render the selected customer
-  renderSelectedCustomer();
+  customer.selectCustomer(customerName);
 
   $('#user-modal').modal('hide');
 
 });
 
 // Clear Customer Button -- When user deselects customer
-document.querySelector('#clear-customer-btn').addEventListener('click', function (e) {
+document.querySelector('#clear-customer-btn').addEventListener('click', event => {
 
-  e.preventDefault();
+  event.preventDefault();
 
-  // Grab the Customer List form radio
-  const customerRadio = this.closest('#customer-select-form').elements.customerRadio;
-
-  // Set all radio to false
-  customerRadio.forEach(radio => {
-    radio.checked = false;
-  });
-
-  // Clear selected customer data
-  pageData.selectedCustomer = {};
-
-  renderSelectedCustomer();
+  customer.resetSelected()
 
 });
 
@@ -623,6 +561,6 @@ document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 // Render initial state of the app
 catalog.render();
 receipt.render();
-renderCustomers();
-renderSelectedCustomer();
+customer.render();
+customer.renderSelected();
 document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
