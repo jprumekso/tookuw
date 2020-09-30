@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Items</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="./vendors/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="./vendors/fontawesome/css/all.min.css">
+  <!-- Animate CSS -->
+  <link rel="stylesheet" href="./vendors/animate/animate.min.css" />
+  <!-- The Style -->
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+
+  <!-- Main Top Navigation Bar -->
+  <nav id="main-navbar" class="navbar navbar-dark bg-primary shadow py-0">
+
+    <!-- Toggler Button -->
+    <button class="navbar-toggler text-light border-0 mr-2" data-toggle="collapse" data-target="#hidden-sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <!-- End of Toggler Button -->
+
+    <!-- Business Name -->
+    <a class="navbar-brand d-none d-sm-block text-uppercase" href="#">Tookuw</a>
+
+    <!-- Profile Button -->
+    <div class="dropdown ml-auto">
+      <button type="button" href="#" class="btn text-white dropdown-toggle" data-toggle="dropdown">
+        <span class="font-weight-bold mr-2">Jalu</span>
+        <i class="fas fa-user-ninja bg-dark p-3 rounded-circle"></i>
+      </button>
+      <div class="dropdown-menu" style="min-width: 7.5rem;">
+        <a class="dropdown-item" href="#"><small>Profile</small></a>
+        <a class="dropdown-item" href="#"><small>Logout</small></a>
+      </div>
+    </div>
+    <!-- End of Profile Button -->
+
+  </nav>
+  <!-- End of Main Top Navigation Bar -->
+
+  <!-- Main Content Wrapper -->
+  <div class="d-flex">
+
+    <!-- Sidebar (hidden by default)-->
+    <nav class="bg-dark collapse px-1" id="hidden-sidebar">
+      <ul class="navbar-nav mt-4">
+        <li class="nav-item text-center">
+          <a href="./index.html" class="text-light">
+            <span><i class="fas fa-fw fa-cash-register fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-receipt fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="./items.html" class="text-light">
+            <span><i class="fas fa-fw fa-gift fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="./customers.html" class="text-light">
+            <span><i class="fas fa-fw fa-user fa-lg"></i></span>
+          </a>
+        </li>
+        <li class="nav-item text-center">
+          <a href="" class="text-light">
+            <span><i class="fas fa-fw fa-cog fa-lg"></i></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <!-- End of Sidebar -->
+
+    <!-- Main Content -->
+    <main class="w-100 mt-2 p-lg-2" id="body-content">
+
+      <!-- Main Content Start Here -->
+      <div id="main-container" class="container-fluid mt-2">
+
+        <div class="row">
+
+          <!-- Catalog Wrapper -->
+          <div class="col-md-6 col-lg-7 col-xl-8 px-0 px-md-3">
+
+            <!-- Product Catalog -->
+            <div class="card shadow rounded-bottom" style="border-radius: 0;">
+
+              <!-- Catalog Search Bar -->
+              <div class="card-header d-flex bg-white align-items-center mt-2 pb-3 justify-content-between">
+                <h4 class="d-none d-sm-block mb-0">Catalog</h4>
+                <input type="text" class="form-control rounded-pill" id="search-catalog" placeholder="Search...">
+              </div>
+              <!-- End of Catalog Search Bar -->
+
+              <!-- Catalog Body -->
+              <div class="card-body" style="height:485px;overflow-y:scroll;">
+
+                <!-- Catalog item is generated dynamically by javascript -->
+                <div id="catalog" class="list-group list-group-flush"></div>
+
+              </div>
+              <!-- End of Catalog Body -->
+
+            </div>
+            <!-- End of Product Catalog -->
+
+          </div>
+          <!-- End of Catalog Wrapper -->
+
+        </div>
+
+      </div>
+
+    </main>
+    <!-- End of Main Content -->
+
+  </div>
+  <!-- End of Main Content Wrapper -->
+
+  <!-- Bootstrap and its dependencies -->
+  <script src="./vendors/jquery/jquery.slim.min.js"></script>
+  <script src="./vendors/bootstrap/js/bootstrap.min.js"></script>
+  <!-- The Script -->
+  <script type="module" src="./items.js"></script>
+
+</body>
+
+</html>

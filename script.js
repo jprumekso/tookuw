@@ -1,8 +1,8 @@
 import { pageData } from './tookuw-store.js';
 import { Catalog } from './components/Catalog.js';
+import { Receipt } from './components/Receipt.js';
 
 // Initial state of all data on the page
-
 pageData.catalogItems = [
   {
     id: 11,
@@ -99,261 +99,77 @@ pageData.filteredCustomer = [];
 pageData.selectedCustomer = {};
 pageData.filteredCatalog = [];
 pageData.receiptItems = [];
-pageData.itemCounter = 0;
+pageData.receiptTotalItem = 0;
 pageData.receiptDiscount = 0;
-pageData.receiptTotal = 0;
+pageData.receiptTotalDue = 0;
 pageData.paymentReceived = 0;
 pageData.paymentChange = 0;
 pageData.paymentDue = 0;
 pageData.catalogSearchQuery = '';
 pageData.customerSearchQuery = '';
 
-const CatalogComponent = new Catalog();
+const catalog = new Catalog(pageData);
+const receipt = new Receipt(pageData);
+
+catalog.render();
+
+// Catalog Search Bar -- When user types the search query to filter catalog
+document.querySelector('#search-catalog').addEventListener('keyup', event => {
+
+  // Grab the search input value and turn to lowercase
+  catalog.searchQuery = event.target.value.toLowerCase();
+
+  // Fill the filteredCatalog with the filtered catalogItem data
+  catalog.filteredCatalog = catalog.data.filter(catalogItem => catalogItem.title.toLowerCase().includes(catalog.searchQuery));
+
+  // Render Catalog
+  catalog.render();
+
+});
+
+// Catalog Item -- When user click at each catalog item
+document.querySelector('#catalog').addEventListener('click', event => {
+
+  // Target the selected item (clicked list)
+  let clickedElement = event.target;
+
+  // If the clicked element is not a catalog-item and not the childern of catalog-item then bailed out 
+  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) return;
+
+  // Grab the catalog item object by its id
+  const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
+  const selectedCatalogItem = catalog.findById(catalogItemId);
+
+  // Check whether the incoming catalogItem is already in the receiptItems array
+  // by using the catalog title as 'filter' on array.find() method 
+  const existingReceiptItem = receipt.findById(catalogItemId);
+
+  // If array.find() found the same title, then the item must be already in the receiptItems array
+  if (existingReceiptItem) {
+
+    receipt.updateItemQty(existingReceiptItem, 1, 'step');
+    receipt.renderItemQty(existingReceiptItem);
+
+    // Then bailed out
+    return;
+
+  }
+
+  receipt.add(selectedCatalogItem);
+
+  // Decrement the selected catalog item stock by 1
+  catalog.updateStock(catalogItemId, -1, 'step');
+  // Render the catalog to reflect change on the selected catalog stock
+  catalog.renderStock(catalogItemId);
+
+});
+
 /**
  * RENDER / UI RELATED FUNCTIONS
  * 
  * These group of functions are used to handle the representation of data
  * Such as generating a markup list of data, injecting markup into the dom, etc
  */
-
-// The function that insert new receipt item
-function addReceiptItem(catalogItemObj) {
-
-  // Create a receipt item object by deep copying the selectedCatalogItem
-  const receiptItem = JSON.parse(JSON.stringify(catalogItemObj));
-  // Assign initial receipt item quantity
-  receiptItem.qty = 1;
-  // Assign initial receipt item total
-  receiptItem.total = receiptItem.qty * receiptItem.price;
-
-  // Push new receipt item into receiptItems array
-  pageData.receiptItems.push(receiptItem);
-
-  // Update the total
-  pageData.receiptTotal = calcTotalDue();
-
-  // Render receiptItems array into list of receipt item
-  renderReceipt()
-
-  // Decrement the selected catalog item stock by 1
-  catalogItemObj.stock--;
-  // Render the catalog to reflect change on the selected catalog stock
-  renderCatalogItemStock(catalogItemObj);
-
-  // Update the item counter
-  pageData.itemCounter = calcTotalItem();
-  // Render Total Item
-  document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-}
-
-// The function that 
-function updateReceiptItemQty(receiptItemObj, value, type = null) {
-
-  if (type === 'step') {
-    // Update the receipt item qty by the given value 
-    receiptItemObj.qty = Math.sign(value) == 1 ? receiptItemObj.qty + Math.abs(value) : receiptItemObj.qty - Math.abs(value);
-  }
-  else {
-    receiptItemObj.qty = value;
-  }
-
-  // Render item quantity
-  renderReceiptItemQty(receiptItemObj);
-  // And update the total by multiplying its new quantity with its price
-  receiptItemObj.total = receiptItemObj.qty * receiptItemObj.price;
-  // Render receipt item total
-  renderReceiptItemTotal(receiptItemObj);
-  // Update receipt total
-  pageData.receiptTotal = calcTotalDue();
-  // Render receipt total
-  renderReceiptTotalDue()
-
-  const theCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.id == receiptItemObj.id);
-
-  if (type === 'step') {
-    // Decrement the selected catalog item stock
-    theCatalogItem.stock = Math.sign(value) == 1 ? theCatalogItem.stock - Math.abs(value) : theCatalogItem.stock + Math.abs(value);
-  }
-  else {
-    theCatalogItem.stock = receiptItemObj.stock - receiptItemObj.qty;
-  }
-
-  // Render the catalog to reflect change on the selected catalog stock
-  renderCatalogItemStock(theCatalogItem);
-
-  // Update the item counter
-  pageData.itemCounter = calcTotalItem();
-  // Render Total Item
-  document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-}
-
-// The function that count the total of all receipt item quantity
-function calcTotalItem() {
-
-  // Return the sum all the total of each item 
-  return pageData.receiptItems.reduce(function (acc, receiptItem) {
-    return acc + receiptItem.qty
-  }, 0);
-
-}
-
-// The function that calculate checkout total
-function calcTotalDue() {
-
-  // Return the sum of each item's total
-  return pageData.receiptItems.reduce(function (acc, receiptItem) {
-    return acc + receiptItem.total
-  }, 0);
-
-}
-
-// The function that render receiptItems array into a markup of receipt list item
-function renderReceipt() {
-
-  // Turn receiptItems into receipt list item markup
-  const receiptListMarkup = pageData.receiptItems.map(function (receiptItem, index) {
-
-    return `
-      <li id="receipt-item-${receiptItem.id}" data-item-index="${index}" class="list-group-item pl-1 pr-2 d-flex justify-content-between align-items-center">
-        <p class="receipt-item-name">${receiptItem.title}</p>
-        <div class="receipt-item-action d-flex justify-content-between align-items-center">
-          <button class="btn btn-light btn-sm rounded-circle qty-btn qty-btn-minus d-none d-md-block">
-            <i class="fas fa-minus"></i>
-          </button>
-          <p class="receipt-item-qty mx-2 d-none d-md-block" data-toggle="modal" data-target="#item-qty-modal" data-title="${receiptItem.title}" data-qty="${receiptItem.qty}">${receiptItem.qty}</p>
-          <input type="number" class="mobile-qty-input form-control d-md-none" value="${receiptItem.qty}" data-current-qty="${receiptItem.qty}">
-          <button class="btn btn-light btn-sm rounded-circle qty-btn qty-btn-plus d-none d-md-block">
-            <i class="fas fa-plus"></i>
-          </button>
-        </div>
-        <p class="receipt-item-total text-right">${receiptItem.total}</p>
-      </li>
-    `;
-
-  }).join('');
-
-  // Render the list markup into its place
-  const allReceiptList = document.querySelectorAll('.receipt-list-item');
-
-  allReceiptList.forEach(function (receiptList) {
-    receiptList.innerHTML = receiptListMarkup;
-  });
-
-  // Render the discount
-  renderReceiptDiscount();
-
-  // Render total at checkout
-  renderReceiptTotalDue();
-
-}
-
-// The function that render quantity change of certain receipt item
-function renderReceiptItemQty(receiptItemObj) {
-
-  // Grab the receipt list group
-  const receiptListGroup = document.querySelectorAll('.receipt-list-group');
-
-  receiptListGroup.forEach(theReceiptList => {
-
-    // Grab the receipt item
-    const receiptItemEl = theReceiptList.querySelector(`#receipt-item-${receiptItemObj.id}`);
-
-    // Render its quantity
-    receiptItemEl.querySelector('.receipt-item-qty').innerHTML = receiptItemObj.qty; // dekstop version
-    receiptItemEl.querySelector('.mobile-qty-input').value = receiptItemObj.qty; // mobile version
-
-  });
-
-  // When the item quantity reach 0,
-  if (receiptItemObj.qty === 0) {
-
-    const receiptItemIndex = pageData.receiptItems.findIndex(receiptItem => receiptItem.id == receiptItemObj.id);
-
-    // remove from the receipt
-    pageData.receiptItems.splice(receiptItemIndex, 1);
-
-    // render receipt
-    renderReceipt();
-
-  }
-
-}
-
-// The function that render total change of certain receipt item
-function renderReceiptItemTotal(receiptItem) {
-
-  // When receipt item is 0
-  if (receiptItem.qty === 0) return;
-
-  // Grab the receipt list group
-  const receiptListGroup = document.querySelectorAll('.receipt-list-group');
-
-  receiptListGroup.forEach(theReceiptList => {
-    // Grab the receipt item
-    const theReceiptItem = theReceiptList.querySelector(`#receipt-item-${receiptItem.id}`);
-    // Render its quantity
-    theReceiptItem.querySelector('.receipt-item-total').innerHTML = receiptItem.total;
-  });
-
-}
-
-// The function that render total
-function renderReceiptTotalDue() {
-
-  // Grab all total-due element
-  const allTotalDue = document.querySelectorAll('.total-due');
-
-  // Render total to all Total Due element
-  allTotalDue.forEach(function (totalDue) {
-    totalDue.innerHTML = pageData.receiptTotal;
-  });
-
-}
-
-// The function that render discount line
-function renderReceiptDiscount() {
-
-  const allDiscountLine = document.querySelectorAll('.discount-line');
-  const allDiscountInput = document.querySelectorAll('.discount-input');
-
-  // When the receipt is empty
-  if (pageData.receiptItems.length == 0) {
-
-    // Set the receipt discount to 0 
-    pageData.receiptDiscount = 0;
-
-  }
-
-  // If there is no discount
-  if (!pageData.receiptDiscount) {
-
-    // Clear all discount line
-    allDiscountLine.forEach(function (discountLine) {
-      discountLine.innerHTML = '';
-    });
-
-    // Clear all discount input
-    allDiscountInput.forEach(function (discountInput) {
-      discountInput.value = '';
-    });
-
-    // Return early
-    return;
-
-  }
-
-  // The discount line markup
-  const discountItemMarkup = `<li class="list-group-item pl-1 pr-2 d-flex justify-content-between align-items-center">
-      <p class="receipt-item-name">Discount</p>
-      <p class="receipt-item-total text-right text-success">${pageData.receiptDiscount}</p>
-    </li>`;
-
-  // Render discount line into receipt
-  allDiscountLine.forEach(function (discountLine) {
-    discountLine.innerHTML = discountItemMarkup;
-  });
-
-}
 
 // The function that render customer list
 function renderCustomers() {
@@ -431,51 +247,6 @@ function resetView() {
  * 
  * The code below are the ones that responsible to handle each user interaction 
  */
-
-// Catalog Search Bar -- When user types the search query to filter catalog
-document.querySelector('#search-catalog').addEventListener('keyup', function (e) {
-
-  // Grab the search input value and turn to lowercase
-  pageData.catalogSearchQuery = this.value.toLowerCase();
-
-  // Filter the catalogItem data
-  CatalogComponent.filter();
-
-  // Render Catalog
-  CatalogComponent.render();
-
-});
-
-// Catalog Item -- When user click at each catalog item
-document.querySelector('#catalog').addEventListener('click', function (e) {
-
-  // Target the selected item (clicked list)
-  let clickedElement = e.target;
-
-  // If the clicked element is not a catalog-item and not the childern of catalog-item then bailed out 
-  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) return;
-
-  // Grab the catalog item object by its id
-  const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
-  const selectedCatalogItem = pageData.catalogItems.find(catalogItem => catalogItem.id == catalogItemId);
-
-  // Check whether the incoming catalogItem is already in the receiptItems array
-  // by using the catalog title as 'filter' on array.find() method 
-  const existingReceiptItem = pageData.receiptItems.find(receiptItem => receiptItem.id == catalogItemId);
-
-  // If array.find() found the same title, then the item must be already in the receiptItems array
-  if (existingReceiptItem) {
-
-    updateReceiptItemQty(existingReceiptItem, 1, 'step')
-
-    // Then bailed out
-    return;
-
-  }
-
-  addReceiptItem(selectedCatalogItem);
-
-});
 
 // Receipt Items -- When user click plus/minus quantity button
 document.addEventListener('click', function (e) {
@@ -862,10 +633,7 @@ document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 });
 
 // Render initial state of the app
-CatalogComponent.render();
 renderCustomers();
 renderSelectedCustomer();
-renderReceiptTotalDue();
-renderReceiptDiscount();
 document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
 document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
