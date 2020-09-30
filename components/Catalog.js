@@ -1,24 +1,92 @@
-import { pageData } from '../tookuw-store.js';
-import { CatalogItem } from './CatalogItem.js';
-
 export class Catalog {
 
-  constructor() {
-    this.element = document.querySelector('#catalog');
+  constructor(data) {
+    this.items = data.items;
+    this.searchQuery = '';
+    this.filteredItems = [];
+    this.element = data.element;
+  }
+
+  filter(value) {
+
+    this.searchQuery = value.toLowerCase();
+    this.filteredItems = this.items.filter(catalogItem => catalogItem.title.toLowerCase().includes(this.searchQuery));
+    this.render();
 
   }
 
-  filter() {
+  isDisabled(itemData) {
+    return itemData.stock === 0 ? 'disabled' : '';
+  }
 
-    pageData.filteredCatalog = pageData.catalogItems.filter(catalogItem => catalogItem.title.toLowerCase().includes(pageData.catalogSearchQuery));
+  template(itemData) {
+
+    return `
+      <a href="#" id="catalog-item-${itemData.id}" class="catalog-item list-group-item list-group-item-action px-0 d-flex flex-wrap align-items-center ${this.isDisabled(itemData)}" data-catalog-id="${itemData.id}">
+        <span class="mr-4"><i class="fas fa-fw fa-gift fa-2x"></i></span>
+        <div>
+          <p>${itemData.title}</p>
+          <p class="text-muted">Stock: <span class="catalog-item-stock">${itemData.stock}</span>pcs</p>
+        </div>
+        <p class="ml-auto">${itemData.price}</p>
+      </a>
+    `;
+
+  }
+
+  setInReceipt(id, value) {
+    // Get the affected item
+    const theItem = this.findItemById(id);
+    // Decrease its stock
+    theItem.inReceipt = true;
+  }
+
+  findItemById(id) {
+
+    // Find individual catalog item
+    return this.items.find(item => item.id == id);
+
+  }
+
+  updateItemStock(id, amount, type = null) {
+
+    // Grab the item
+    const theItem = this.findItemById(id);
+
+    // Update its quantity
+    if (type === 'step') {
+      theItem.stock = Math.sign(amount) == 1 ? theItem.stock + Math.abs(amount) : theItem.stock - Math.abs(amount);
+    }
+    else {
+      theItem.stock = amount;
+    }
+
+    // Re-render
+    this.renderItem(theItem);
+
+  }
+
+  setCatalogStock(id, amount) {
+    // Grab the item
+    const theItem = this.findItemById(id);
+    theItem.stock = amount;
+    this.renderItem(theItem);
+  }
+
+  renderItem(itemData) {
+
+    // Render individual catalog item
+    this.element.querySelector(`#catalog-item-${itemData.id}`).outerHTML = this.template(itemData);
 
   }
 
   render() {
 
-    const catalogData = pageData.filteredCatalog.length == 0 && !pageData.catalogSearchQuery ? pageData.catalogItems : pageData.filteredCatalog;
+    // Decide which array of items to render
+    const theItems = this.filteredItems.length == 0 && !this.searchQuery ? this.items : this.filteredItems;
 
-    this.element.innerHTML = catalogData.map(itemData => { return new CatalogItem(itemData).template() }).join('');;
+    // Render
+    this.element.innerHTML = theItems.map(itemData => { return this.template(itemData) }).join('');;
 
   }
 

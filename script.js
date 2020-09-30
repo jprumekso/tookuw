@@ -3,56 +3,6 @@ import { Catalog } from './components/Catalog.js';
 import { Receipt } from './components/Receipt.js';
 
 // Initial state of all data on the page
-pageData.catalogItems = [
-  {
-    id: 11,
-    title: 'Ripe Banana',
-    stock: 150,
-    price: 12500
-  },
-  {
-    id: 12,
-    title: 'Fresh Apple',
-    stock: 75,
-    price: 6500
-  },
-  {
-    id: 13,
-    title: 'Juicy Orange',
-    stock: 100,
-    price: 7500
-  },
-  {
-    id: 14,
-    title: 'Giant Mango',
-    stock: 5,
-    price: 25000
-  },
-  {
-    id: 15,
-    title: 'Seedless Guava',
-    stock: 15,
-    price: 45000
-  },
-  {
-    id: 16,
-    title: 'Creamy Durian',
-    stock: 77,
-    price: 12000
-  },
-  {
-    id: 17,
-    title: 'Sweety Grape',
-    stock: 35,
-    price: 22000
-  },
-  {
-    id: 18,
-    title: 'Tasty Pear',
-    stock: 0,
-    price: 5000
-  },
-];
 pageData.customers = [
   {
     name: 'Leanne',
@@ -97,71 +47,71 @@ pageData.customers = [
 ];
 pageData.filteredCustomer = [];
 pageData.selectedCustomer = {};
-pageData.filteredCatalog = [];
-pageData.receiptItems = [];
-pageData.receiptTotalItem = 0;
-pageData.receiptDiscount = 0;
-pageData.receiptTotalDue = 0;
 pageData.paymentReceived = 0;
 pageData.paymentChange = 0;
 pageData.paymentDue = 0;
-pageData.catalogSearchQuery = '';
 pageData.customerSearchQuery = '';
 
-const catalog = new Catalog(pageData);
-const receipt = new Receipt(pageData);
-
-catalog.render();
-
-// Catalog Search Bar -- When user types the search query to filter catalog
-document.querySelector('#search-catalog').addEventListener('keyup', event => {
-
-  // Grab the search input value and turn to lowercase
-  catalog.searchQuery = event.target.value.toLowerCase();
-
-  // Fill the filteredCatalog with the filtered catalogItem data
-  catalog.filteredCatalog = catalog.data.filter(catalogItem => catalogItem.title.toLowerCase().includes(catalog.searchQuery));
-
-  // Render Catalog
-  catalog.render();
-
+const catalog = new Catalog({
+  items: [
+    {
+      id: 11,
+      title: 'Ripe Banana',
+      stock: 150,
+      price: 12500
+    },
+    {
+      id: 12,
+      title: 'Fresh Apple',
+      stock: 75,
+      price: 6500
+    },
+    {
+      id: 13,
+      title: 'Juicy Orange',
+      stock: 100,
+      price: 7500
+    },
+    {
+      id: 14,
+      title: 'Giant Mango',
+      stock: 5,
+      price: 25000
+    },
+    {
+      id: 15,
+      title: 'Seedless Guava',
+      stock: 15,
+      price: 45000
+    },
+    {
+      id: 16,
+      title: 'Creamy Durian',
+      stock: 77,
+      price: 12000
+    },
+    {
+      id: 17,
+      title: 'Sweety Grape',
+      stock: 35,
+      price: 22000
+    },
+    {
+      id: 18,
+      title: 'Tasty Pear',
+      stock: 0,
+      price: 5000
+    },
+  ],
+  element: document.querySelector('#catalog')
 });
 
-// Catalog Item -- When user click at each catalog item
-document.querySelector('#catalog').addEventListener('click', event => {
-
-  // Target the selected item (clicked list)
-  let clickedElement = event.target;
-
-  // If the clicked element is not a catalog-item and not the childern of catalog-item then bailed out 
-  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) return;
-
-  // Grab the catalog item object by its id
-  const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
-  const selectedCatalogItem = catalog.findById(catalogItemId);
-
-  // Check whether the incoming catalogItem is already in the receiptItems array
-  // by using the catalog title as 'filter' on array.find() method 
-  const existingReceiptItem = receipt.findById(catalogItemId);
-
-  // If array.find() found the same title, then the item must be already in the receiptItems array
-  if (existingReceiptItem) {
-
-    receipt.updateItemQty(existingReceiptItem, 1, 'step');
-    receipt.renderItemQty(existingReceiptItem);
-
-    // Then bailed out
-    return;
-
-  }
-
-  receipt.add(selectedCatalogItem);
-
-  // Decrement the selected catalog item stock by 1
-  catalog.updateStock(catalogItemId, -1, 'step');
-  // Render the catalog to reflect change on the selected catalog stock
-  catalog.renderStock(catalogItemId);
-
+const receipt = new Receipt({
+  receiptItems: [],
+  receiptTotalItem: 0,
+  receiptDiscount: 0,
+  receiptTotalDue: 0,
+  element: document.querySelectorAll('.receipt-list-group')
 });
 
 /**
@@ -248,6 +198,32 @@ function resetView() {
  * The code below are the ones that responsible to handle each user interaction 
  */
 
+// Catalog Search Bar -- When user types the search query to filter catalog
+document.querySelector('#search-catalog').addEventListener('keyup', event => { catalog.filter(event.target.value) });
+
+// Catalog Item -- When user click at each catalog item
+document.querySelector('#catalog').addEventListener('click', event => {
+
+  // Target the selected item (clicked list)
+  let clickedElement = event.target;
+
+  // If the clicked element is not a catalog-item and not the childern of catalog-item then bailed out 
+  if (!clickedElement.matches('.catalog-item') && !clickedElement.closest('.catalog-item')) return;
+
+  // Grab the clicked catalog item's id
+  const catalogItemId = clickedElement.dataset.catalogId || clickedElement.closest('.catalog-item').dataset.catalogId;
+
+  // Grab full catalog item object
+  const selectedCatalogItem = catalog.findItemById(catalogItemId);
+
+  // Add the selected catalog item to receipt
+  receipt.add(selectedCatalogItem);
+
+  // Decrease its stock
+  catalog.updateItemStock(catalogItemId, -1, 'step');
+
+});
+
 // Receipt Items -- When user click plus/minus quantity button
 document.addEventListener('click', function (e) {
 
@@ -261,24 +237,27 @@ document.addEventListener('click', function (e) {
   if (!clickedElement.matches('.qty-btn') && !clickedElement.matches('.fas')) return;
 
   // Grab the index of the respective item
-  let itemIndex = clickedElement.closest('.list-group-item').dataset.itemIndex;
-
-  // Grab the receipt item itself
-  const affectedReceiptItem = pageData.receiptItems[itemIndex];
+  let itemId = clickedElement.closest('.list-group-item').dataset.itemId;
 
   // If it's the minus button, decrement the quantity
   // NOTE: Since the button consist of a button and an icon inside it 
   // and the click can happen at either of them then we need to target both
   if (clickedElement.matches('.fa-minus') || clickedElement.matches('.qty-btn-minus')) {
 
-    updateReceiptItemQty(affectedReceiptItem, -1, 'step');
+    // Decrease receipt item's quantity
+    receipt.updateItemQty(itemId, -1, 'step');
+    // Increase catalog item's stock
+    catalog.updateItemStock(itemId, 1, 'step');
 
   };
 
   // If it's the plus button, increment 
   if (clickedElement.matches('.fa-plus') || clickedElement.matches('.qty-btn-plus')) {
 
-    updateReceiptItemQty(affectedReceiptItem, 1, 'step');
+    // Increase receipt item's qty
+    receipt.updateItemQty(itemId, 1, 'step');
+    // Decrease catalog item's stock
+    catalog.updateItemStock(itemId, -1, 'step');
 
   }
 
@@ -290,15 +269,21 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
   // Grab the Targeted Input
   const theQtyInput = e.target;
 
-  // Grab the relevant item index
-  const itemIndex = theQtyInput.closest('.list-group-item').dataset.itemIndex;
+  // Grab the relevant item id
+  const itemId = theQtyInput.closest('.list-group-item').dataset.itemId;
 
   // Grab the affected receipt item
-  const affectedReceiptItem = pageData.receiptItems[itemIndex];
+  const theItem = receipt.findById(itemId);
 
   if (isNaN(parseInt(theQtyInput.value))) return
 
-  updateReceiptItemQty(affectedReceiptItem, parseInt(theQtyInput.value))
+  receipt.updateItemQty(itemId, parseInt(theQtyInput.value))
+
+  // Grab the initial catalog item's stock from the receipt item and decrease it by the current receipt item qty
+  const newCatalogStock = theItem.stock - theItem.qty;
+
+  // Set new catalog item's stock;
+  catalog.setCatalogStock(itemId, newCatalogStock)
 
 });
 
@@ -316,7 +301,7 @@ document.querySelector('#mobile-receipt').addEventListener('focusout', function 
 
   if (!e.target.matches('input[type=number]')) return;
 
-  renderReceipt();
+  receipt.render();
 
 });
 
@@ -350,16 +335,19 @@ document.addEventListener('click', function (e) {
   const discountInput = clickedElement.nextElementSibling;
 
   // Get existing discount
-  const existingDiscount = pageData.receiptDiscount;
+  const existingDiscount = receipt.discount;
 
   // Grab the value of discount input
-  pageData.receiptDiscount = parseInt(discountInput.value);
+  receipt.discount = parseInt(discountInput.value);
 
   // Calculate total after discount
-  pageData.receiptTotal = pageData.receiptTotal + existingDiscount - pageData.receiptDiscount;
+  receipt.totalDue = receipt.totalDue + existingDiscount - receipt.discount;
 
-  // Render receipt
-  renderReceipt();
+  // Render receipt discount
+  receipt.renderDiscount();
+
+  // Render receipt total()
+  receipt.renderTotalDue();
 
 });
 
@@ -370,14 +358,14 @@ $('#item-qty-modal').on('show.bs.modal', function (event) {
   const button = $(event.relatedTarget)
 
   // Extract the data
-  const itemIndex = button.parents('.list-group-item').data('item-index');
+  const itemId = button.parents('.list-group-item').data('item-id');
   const itemQty = button.data('qty');
   const itemName = button.data('title');
 
   // Render the data into each respective element
   $(this).find('.modal-title').text(itemName);
   $(this).find('.modal-body input').val(itemQty);
-  $(this).find('.modal-footer #set-item-qty-btn').attr('data-item-index', itemIndex);
+  $(this).find('.modal-footer #set-item-qty-btn').attr('data-item-id', itemId);
   $(this).find('.modal-footer #set-item-qty-btn').attr('data-current-qty', itemQty);
 
 });
@@ -386,15 +374,16 @@ $('#item-qty-modal').on('show.bs.modal', function (event) {
 document.querySelector('#set-item-qty-btn').addEventListener('click', function (event) {
 
   // Grab the relevant item index
-  const itemIndex = this.dataset.itemIndex;
-
-  // Grab the affected receipt item
-  const affectedReceiptItem = pageData.receiptItems[itemIndex];
+  const itemId = this.dataset.itemId;
 
   // Grab the quantity input value
   const qtyInput = parseInt(this.closest('.modal-content').querySelector('#qty-input--modal').value);
 
-  updateReceiptItemQty(affectedReceiptItem, qtyInput);
+  receipt.updateItemQty(itemId, qtyInput);
+
+  // Calculate new catalog item's value
+  const newStock = receipt.findById(itemId).stock - qtyInput;
+  catalog.updateItemStock(itemId, newStock);
 
 });
 
@@ -633,7 +622,8 @@ document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 });
 
 // Render initial state of the app
+catalog.render();
+receipt.render();
 renderCustomers();
 renderSelectedCustomer();
 document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
-document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
