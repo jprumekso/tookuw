@@ -1,6 +1,3 @@
-import { pageData } from '../tookuw-store.js';
-import { Catalog } from './Catalog.js';
-
 export class Receipt {
 
   constructor(data) {
@@ -118,8 +115,6 @@ export class Receipt {
   // The function that insert new receipt item
   add(catalogItem) {
 
-    // console.log(catalogItem);
-
     // If the item is already in the receipt
     if (this.findById(catalogItem.id)) {
 
@@ -132,8 +127,6 @@ export class Receipt {
 
     // Push new receipt item into receiptItems array
     this.items.push(this.catalogToReceipt(catalogItem));
-
-    console.log(this.items);
 
     // Update the item counter
     this.updateTotalItem();

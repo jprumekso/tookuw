@@ -1,4 +1,3 @@
-import { pageData } from './tookuw-store.js';
 import { Catalog } from './components/Catalog.js';
 import { Receipt } from './components/Receipt.js';
 

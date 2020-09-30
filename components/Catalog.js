@@ -34,13 +34,6 @@ export class Catalog {
 
   }
 
-  setInReceipt(id, value) {
-    // Get the affected item
-    const theItem = this.findItemById(id);
-    // Decrease its stock
-    theItem.inReceipt = true;
-  }
-
   findItemById(id) {
 
     // Find individual catalog item
