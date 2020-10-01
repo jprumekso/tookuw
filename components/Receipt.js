@@ -150,6 +150,25 @@ export class Receipt {
     return receiptItem;
   }
 
+  setDiscount(value) {
+
+    // Grab current discount
+    const currentDiscount = this.discount;
+
+    // Set new discount value
+    this.discount = value;
+
+    // Calculate total after discount
+    this.totalDue = this.totalDue + currentDiscount - this.discount;
+
+    // Render receipt discount
+    this.renderDiscount();
+
+    // Render receipt total()
+    this.renderTotalDue();
+
+  }
+
   // The function that count the total of all receipt item quantity
   updateTotalItem() {
 
@@ -261,6 +280,14 @@ export class Receipt {
       discountLine.innerHTML = discountItemMarkup;
     });
 
+  }
+
+  reset() {
+    this.items = [];
+    this.totalDue = 0;
+    this.discount = 0;
+    this.totalItem = 0;
+    this.render();
   }
 
 }

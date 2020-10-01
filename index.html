@@ -310,7 +310,7 @@
           <form id="payment-form" name="paymentForm" action="#" method="post">
             <div class="text-center mb-4 bg-light py-4">
               <p class="mb-0"><small>Total Due</small></p>
-              <h2 class="total-due mb-0 font-weight-bold"></h2>
+              <h2 id="total-due" class="mb-0 font-weight-bold"></h2>
             </div>
             <div class="form-group">
               <label for="payment-received"><small>Received</small></label>
@@ -318,29 +318,7 @@
             </div>
             <div class="form-group">
               <label for=""><small>Payment Method</small></label>
-              <ul class="list-group list-group-flush" style="height:108px;overflow-y:scroll;">
-                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio2" required=""
-                      value="Cash">
-                    <label class="form-check-label" for="paymentRadio2">Cash</label>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio3" required=""
-                      value="Paypal">
-                    <label class="form-check-label" for="paymentRadio3">Paypal</label>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="paymentRadio" id="paymentRadio4" required=""
-                      value="Bank Transfer">
-                    <label class="form-check-label" for="paymentRadio4">Bank Transfer</label>
-                  </div>
-                </li>
-              </ul>
+              <ul class="payment-method-list list-group list-group-flush" style="height:108px;overflow-y:scroll;"></ul>
             </div>
           </form>
         </div>

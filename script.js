@@ -1,14 +1,29 @@
 import { Catalog } from './components/Catalog.js';
 import { Receipt } from './components/Receipt.js';
 import { Customer } from './components/Customer.js';
+import { Payment } from './components/Payment.js';
+import { SimpleAlert } from './components/SimpleAlert.js';
 
 // Initial state of all data on the page
-const pageData = {
-  paymentReceived: 0,
-  paymentChange: 0,
-  paymentDue: 0,
-  customerSearchQuery: '',
-}
+const payment = new Payment({
+  received: 0,
+  change: 0,
+  due: 0,
+  methods: [
+    {
+      id: 1,
+      name: 'Cash'
+    },
+    {
+      id: 2,
+      name: 'Bank Transfer',
+    },
+    {
+      id: 3,
+      name: 'OVO'
+    }
+  ]
+});
 
 const catalog = new Catalog({
   items: [
@@ -119,20 +134,6 @@ const customer = new Customer({
 });
 
 /**
- * RENDER / UI RELATED FUNCTIONS
- * 
- * These group of functions are used to handle the representation of data
- * Such as generating a markup list of data, injecting markup into the dom, etc
- */
-
-// Function that construct the alert modal content
-function createAlert(alert) {
-  return `<i class="${alert.icon.name} fa-4x mb-4 ${alert.icon.color} animate__animated ${alert.icon.animation}"></i>
-          <h4>${alert.title}</h4>
-          <p class="mb-0">${alert.message}</p>`;
-}
-
-/**
  * ACTION RELATED FUNCTIONS
  * 
  * These group of functions handle the action needed on dom events
@@ -188,6 +189,9 @@ document.querySelector('#catalog').addEventListener('click', event => {
   // Decrease its stock
   catalog.updateItemStock(catalogItemId, -1, 'step');
 
+  // Update payment total
+  payment.updateTotalDue(receipt.totalDue);
+
 });
 
 // Receipt Items -- When user click plus/minus quantity button
@@ -214,6 +218,8 @@ document.addEventListener('click', function (e) {
     receipt.updateItemQty(itemId, -1, 'step');
     // Increase catalog item's stock
     catalog.updateItemStock(itemId, 1, 'step');
+    // Update payment total
+    payment.updateTotalDue(receipt.totalDue);
 
   };
 
@@ -224,6 +230,8 @@ document.addEventListener('click', function (e) {
     receipt.updateItemQty(itemId, 1, 'step');
     // Decrease catalog item's stock
     catalog.updateItemStock(itemId, -1, 'step');
+    // Update payment total
+    payment.updateTotalDue(receipt.totalDue);
 
   }
 
@@ -250,6 +258,9 @@ document.querySelector('#mobile-receipt').addEventListener('input', function (e)
 
   // Set new catalog item's stock;
   catalog.setCatalogStock(itemId, newCatalogStock)
+
+  // Update payment total
+  payment.updateTotalDue(receipt.totalDue);
 
 });
 
@@ -300,20 +311,11 @@ document.addEventListener('click', function (e) {
   // Get the respective discount input
   const discountInput = clickedElement.nextElementSibling;
 
-  // Get existing discount
-  const existingDiscount = receipt.discount;
-
   // Grab the value of discount input
-  receipt.discount = parseInt(discountInput.value);
+  receipt.setDiscount(parseInt(discountInput.value))
 
-  // Calculate total after discount
-  receipt.totalDue = receipt.totalDue + existingDiscount - receipt.discount;
-
-  // Render receipt discount
-  receipt.renderDiscount();
-
-  // Render receipt total()
-  receipt.renderTotalDue();
+  // Update payment total
+  payment.updateTotalDue(receipt.totalDue);
 
 });
 
@@ -416,7 +418,7 @@ document.addEventListener('click', function (e) {
 
   if (!clickedElement.matches('.charge-btn') && !clickedElement.closest('.charge-btn')) return;
 
-  if (pageData.receiptItems.length < 1) {
+  if (receipt.items.length < 1) {
 
     // Compose Alert Modal Content
     const warningAlert = {
@@ -426,10 +428,10 @@ document.addEventListener('click', function (e) {
         animation: `animate__shakeX`
       },
       title: 'Whoops',
-      message: "You can't checkout an empty receipt."
+      message: "You can't checkout an empty receipt.",
     };
 
-    this.querySelector('#alert-modal .modal-body').innerHTML = createAlert(warningAlert);
+    this.querySelector('#alert-modal .modal-body').innerHTML = new SimpleAlert(warningAlert).create();
 
     // Show Alert Modal
     $('#alert-modal').modal('show');
@@ -452,29 +454,15 @@ document.querySelector('#payment-form').addEventListener('submit', function (e) 
 
   e.preventDefault();
 
-  // Grab the received payment value
-  pageData.paymentReceived = parseInt(this.querySelector('#payment-received').value);
-
-  // Render the received payment value into Payment Success Modal
-  document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
+  payment.setReceived(parseInt(this.querySelector('#payment-received').value));
 
   // Render the payment method into Payment Success Modal
   const selectedPaymentMethod = document.forms.paymentForm.elements.paymentRadio.value;
-  document.querySelector('#payment-method--modal').innerHTML = selectedPaymentMethod;
+  payment.setMethod(selectedPaymentMethod);
 
-  // Calculate the change when the payment received is greater than the current total
-  if (pageData.paymentReceived > pageData.receiptTotal) {
-    pageData.paymentChange = pageData.paymentReceived - pageData.receiptTotal;
-    document.querySelector('#payment-effect-title').innerHTML = 'Change';
-    document.querySelector('#payment-effect-amount').innerHTML = pageData.paymentChange;
-  }
+  payment.proceed();
 
-  // Calculate payment due
-  if (pageData.receiptTotal > pageData.paymentReceived) {
-    pageData.paymentDue = pageData.receiptTotal - pageData.paymentReceived;
-    document.querySelector('#payment-effect-title').innerHTML = 'Payment Due';
-    document.querySelector('#payment-effect-amount').innerHTML = pageData.paymentDue;
-  }
+  payment.render();
 
   // Hide the Payment Modal
   $('#payment-modal').modal('hide');
@@ -499,7 +487,7 @@ document.addEventListener('click', function (e) {
 
   if (!e.target.matches('.save-receipt-btn')) return;
 
-  if (pageData.receiptItems.length < 1) {
+  if (receipt.items.length < 1) {
 
     // Create warning alert
     const warningAlert = {
@@ -537,7 +525,7 @@ document.addEventListener('click', function (e) {
   }
 
   // Render alert modal
-  this.querySelector('#alert-modal .modal-body').innerHTML = createAlert(successAlert);
+  this.querySelector('#alert-modal .modal-body').innerHTML = new SimpleAlert(successAlert).create;
 
   // Show alert modal
   $('#alert-modal').modal('show');
@@ -547,7 +535,9 @@ document.addEventListener('click', function (e) {
     $('#alert-modal').modal('hide');
   }, 1500);
 
-  resetView();
+  receipt.reset();
+  payment.reset();
+  customer.resetSelected();
 
 });
 
@@ -563,4 +553,4 @@ catalog.render();
 receipt.render();
 customer.render();
 customer.renderSelected();
-document.querySelector('#total-paid--modal').innerHTML = pageData.paymentReceived;
+payment.render();
