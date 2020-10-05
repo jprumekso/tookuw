@@ -134,32 +134,6 @@ const customer = new Customer({
 });
 
 /**
- * ACTION RELATED FUNCTIONS
- * 
- * These group of functions handle the action needed on dom events
- */
-
-// The functions that reset the data and page view
-function resetView() {
-
-  // Set data to its initial state
-  pageData.receiptItems = [];
-  pageData.receiptDiscount = 0;
-  pageData.receiptTotal = 0;
-  pageData.paymentReceived = 0;
-  pageData.paymentChange = 0;
-  pageData.paymentDue = 0;
-  pageData.selectedCustomer = {};
-  pageData.itemCounter = 0;
-
-  // Render
-  renderSelectedCustomer();
-  renderReceipt();
-  document.querySelector('#item-counter').innerHTML = pageData.itemCounter;
-
-}
-
-/**
  * ALL EVENTS
  * 
  * The code below are the ones that responsible to handle each user interaction 
@@ -500,7 +474,7 @@ document.addEventListener('click', function (e) {
       message: "You can't save an empty receipt."
     };
 
-    this.querySelector('#alert-modal .modal-body').innerHTML = createAlert(warningAlert);
+    this.querySelector('#alert-modal .modal-body').innerHTML = new SimpleAlert(warningAlert).create();
 
     // Show Alert Modal
     $('#alert-modal').modal('show');
@@ -525,7 +499,7 @@ document.addEventListener('click', function (e) {
   }
 
   // Render alert modal
-  this.querySelector('#alert-modal .modal-body').innerHTML = new SimpleAlert(successAlert).create;
+  this.querySelector('#alert-modal .modal-body').innerHTML = new SimpleAlert(successAlert).create();
 
   // Show alert modal
   $('#alert-modal').modal('show');
@@ -544,7 +518,9 @@ document.addEventListener('click', function (e) {
 // New Sale Button -- When user clicks New Sale buton
 document.querySelector('#new-sale-btn').addEventListener('click', function (e) {
 
-  resetView();
+  receipt.reset();
+  payment.reset();
+  customer.resetSelected();
 
 });
 
