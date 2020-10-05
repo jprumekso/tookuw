@@ -1,6 +1,8 @@
 # Tookuw
 
-I chalenge myself to build a complete state-based UI app using vanilla JS, then this is it: Tookuw **a simple state-based point of sale UI built with Bootstrap and vanilla JS.** It's still prototype though, no database whatsoever.
+I chalenge myself to build an interactive prototype using Bootstrap and Vanilla JS. And here it is the result: an interactive checkout screen.
+
+I started with simple procedural approach and progress to OOP. It's not full fledged OOP app though, I just encapsulate some ui into its own class \[just select the branch to see how I implement these approach\]. 
 
 ## Features
 Here are what you can do with this simple UI:
@@ -14,17 +16,4 @@ Here are what you can do with this simple UI:
 - **Payment loader screen** which simulate a payment processing.
 - **Responsive!**
 
-## Roadmap
-Some plan I have with this project:
-- Finish the other screens: Receipts, Products, Customer, Setting
-- Adopt component-based or object-oriented style
-- Client-side router
-- QR Code scanner
-- Turn into offline-first PWA
-- Connect/deploy it to JAMSTACK backend such as Firebase/Netlify
-- User Auth
-
-## Want to follow me on this exciting journey?
-I plan to share the techniques, challenges, and simply the stories of creating Tookuw on these platform:
-- My Dev.to (https://dev.to/jprumekso) [international audience]
-- My personal website (https://sitangankanan.com) [Indonesian audience]
+While this prototype works, surely it's far from perfect, such as tight coupling, etc. If you have difficulty understanding the code, feel free to contact me. 
